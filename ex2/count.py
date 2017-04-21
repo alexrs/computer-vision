@@ -130,10 +130,6 @@ def showCircles(img, circles, text=None):
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, cv2.cv.CV_RGB(0, 0,255))
     #show the result
     cv2.imshow('img',img)
-    if text != None:
-        cv2.imwrite('circles.jpg', img)
-    else:
-        cv2.imwrite('final.jpg', img)
     cv2.waitKey(0)    
 
 
