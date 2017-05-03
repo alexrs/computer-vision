@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import cv2.cv as cv
 import os
+import fnmatch
 
 def load_landmarks(directory, dim=80):
     '''
@@ -10,7 +11,7 @@ def load_landmarks(directory, dim=80):
     @return np.array, shape=(num of files, num of landmarks in each file=80)
     '''
     #get the filenames that matches the extension
-    filenames = fnmatch.fiter(os.listdir(directory), '*.txt')
+    filenames = fnmatch.filter(os.listdir(directory), '*.txt')
     # create the array
     X = np.zeros((len(filenames), dim))
 
