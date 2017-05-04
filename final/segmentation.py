@@ -20,13 +20,15 @@ def load_landmarks(directory, dim=80):
     # iterate over the files to create a matrix containing the landmarks
     for i, filename in enumerate(filenames):
         file_in = directory + "/" + filename
-        lands = np.loadtxt(file_in)
+        lands = np.loadtxt(file_in, dtype=float)
         X[i, :] = lands
 
     return X
 
 def procrustes(X, Y, scaling=True, reflection='best'):
     """
+    https://stackoverflow.com/questions/18925181/procrustes-analysis-with-numpy
+    
     Procrustes analysis determines a linear transformation (translation,
     reflection, orthogonal rotation and scaling) of the points in Y to best
     conform them to the points in matrix X, using the sum of squared errors
@@ -132,31 +134,38 @@ def procrustes(X, Y, scaling=True, reflection='best'):
 
     return d, Z, tform
 
-def pca(X):
-    '''
-    http://sebastianraschka.com/Articles/2015_pca_in_3_steps.html#pca-vs-lda
-    ''' 
-    mean = np.mean(X, axis=0)
-    cov = np.cov(X.T)
-    eig_vals, eig_vecs = np.linalg.eig(cov)
-    # Make a list of (eigenvalue, eigenvector) tuples
-    eig_pairs = [(np.abs(eig_vals[i]), eig_vecs[:,i]) for i in range(len(eig_vals))]
-    # Sort the (eigenvalue, eigenvector) tuples from high to low
-    eig_pairs.sort(key=lambda x: x[0], reverse=True)
+def pca(data, dims_rescaled_data=3):
+    """
+    returns: data transformed in 2 dims/columns + regenerated original data
+    pass in: data as 2D NumPy array
+    """
+    m, n = data.shape
+    # mean center the data
+    mu = np.mean(data, axis=0)
+    X = data
+    # calculate the covariance matrix
+    cov = np.cov(X)
+    # calculate eigenvectors & eigenvalues of the covariance matrix
+    # use 'eigh' rather than 'eig' since R is symmetric, 
+    # the performance gain is substantial
+    evals, evecs = np.linalg.eig(cov)
+    #plot_variance(evals)    
+    # sort eigenvalue in decreasing order
+    idx = np.argsort(evals)[::-1]
+    evecs = evecs[:,idx]
+    # sort eigenvectors according to same index
+    evals = evals[idx]
+    # select the first n eigenvectors (n is desired dimension
+    # of rescaled data array, or dims_rescaled_data)
+    evecs = evecs[:, :dims_rescaled_data]
+    # carry out the transformation on the data using eigenvectors
+    # and return the re-scaled data, eigenvalues, and eigenvectors
+    return np.dot(evecs.T, (X - mu)), evals, evecs, mu
+
+def plot_variance(eig_vals):
     tot = sum(eig_vals)
-    
     var_exp = [(i / tot)*100 for i in sorted(eig_vals, reverse=True)]
     cum_var_exp = np.cumsum(var_exp)
-    plot_variance(var_exp, cum_var_exp)
-
-    matrix_w = np.hstack((eig_pairs[0][1].reshape(80,1),
-                          eig_pairs[1][1].reshape(80,1),
-                          eig_pairs[2][1].reshape(80,1),
-    ))
-    Y = X.dot(matrix_w)
-    return Y
-
-def plot_variance(var_exp, cum_var_exp):
     with plt.style.context('seaborn-whitegrid'):
         plt.figure(figsize=(6, 4))
         plt.bar(range(80), var_exp, alpha=0.5, align='center',
@@ -167,7 +176,7 @@ def plot_variance(var_exp, cum_var_exp):
         plt.xlabel('Principal components')
         plt.legend(loc='best')
         plt.tight_layout()
-        #plt.show()
+        plt.show()
 
 
 def plot_landmarks(X):
@@ -180,17 +189,32 @@ def plot_landmarks(X):
             else:
                 y.append(elem)
 
-    plt.plot(x, y, '-.')
+    plt.plot(x, y, '.')
     plt.show()
+
+def test_PCA(data):
+    '''
+    test by attempting to recover original data array from
+    the eigenvectors of its covariance matrix & comparing that
+    'recovered' array with the original data
+    '''
+    m , _ , eigenvectors, mu = pca(data)
+    data_recovered = np.dot(eigenvectors, m) + mu
+    print data
+    print
+    print
+    print
+    print data_recovered
+    print np.allclose(data, data_recovered)
 
 if __name__ == "__main__":
     # Load landmarks
     landmarks = load_landmarks("ProjectData/_Data/Landmarks/original")
-    # plot_landmarks(landmarks)
     # preprocess the landmarks 
     d, Z, tform = procrustes(landmarks.T, landmarks[0:1].T)
     # PCA
-    red_lands = pca(Z.T)
+    dat, eigenvalues, eigenvectors, mu = pca(Z)
+    #plot_landmarks(dat)
     # Load radiographs
     directory = "ProjectData/_Data/Radiographs"
     filenames = fnmatch.filter(os.listdir(directory),'*.tif')
