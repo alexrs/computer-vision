@@ -1,0 +1,31 @@
+\documentclass[12pt]{article}
+\usepackage{makeidx}
+\usepackage[margin=1in]{geometry}  % set the margins to 1in on all sides
+\usepackage{graphicx}              % to include figures
+\usepackage{amsmath}               % great math stuff
+\usepackage{amsfonts}              % for blackboard bold, etc
+\usepackage{amsthm}                % better theorem environments
+\usepackage{makeidx}               % index
+\usepackage[utf8]{inputenc}        % now we have tildes!
+\usepackage{dirtytalk}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{listings}
+\usepackage[english]{babel}
+%%% Configure a directory location for sections
+\newcommand*{\sectiondir}{sections/}
+\usepackage{import}
+
+\begin{document}
+	\import{\sectiondir}{title.tex}
+	\tableofcontents
+	\newpage
+	\hspace{0pt}
+	\vfill
+%	\import{\sectiondir}{intro.tex}
+%	\vfill
+%	\hspace{0pt}
+%	\newpage
+%	\newpage	
+%	\import{\sectiondir}{bib.tex}
+\end{document}
