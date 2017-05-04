@@ -25,41 +25,6 @@ def load_landmarks(directory, dim=80):
 
     return X
 
-def preprocess_landmarks(X):
-    '''
-    preprocess_landmarks preprocess the landmarks to normalise translation, rotation
-    and scale differences (Procrustes Analysis)
-
-    @return np.array with preprocessed data
-    '''
-    points1 = X[0:1].T
-    n, m = points1.shape
-    points2 = X[1:].T
-    ny, my = points2.shape
-
-    if m < my:
-       zer = np.zeros((ny, my - m))
-       points1 = np.hstack((points1, zer))
-    
-    c1 = np.mean(points1, axis=0)
-    c2 = np.mean(points2, axis=0)
-    points1 -= c1
-    points2 -= c2
-
-    s1 = np.std(points1)
-    s2 = np.std(points2)
-    points1 /= s1
-    points2 /= s2
-
-    mult = np.dot(points1.T, points2)
-    U, S, Vt = np.linalg.svd(mult)
-    R = (U * Vt).T
-
-    ret =  np.vstack([np.hstack(((s2 / s1) * R, c2.T - (s2 / s1) * R * c1.T)),
-                         np.matrix([0., 0., 1.])])
-    return ret
-
-
 def procrustes(X, Y, scaling=True, reflection='best'):
     """
     Procrustes analysis determines a linear transformation (translation,
@@ -224,10 +189,9 @@ if __name__ == "__main__":
     landmarks = load_landmarks("ProjectData/_Data/Landmarks/original")
     # plot_landmarks(landmarks)
     # preprocess the landmarks 
-    landmarks = preprocess_landmarks(landmarks)
     d, Z, tform = procrustes(landmarks.T, landmarks[0:1].T)
     # PCA
-    red_lands = pca(Z.T)
+    red_lands = pca(landmarks)
     # Load radiographs
     directory = "ProjectData/_Data/Radiographs"
     filenames = fnmatch.filter(os.listdir(directory),'*.tif')
