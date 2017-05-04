@@ -139,7 +139,6 @@ def pca(X):
     mean = np.mean(X, axis=0)
     cov = np.cov(X.T)
     eig_vals, eig_vecs = np.linalg.eig(cov)
-    print mean
     # Make a list of (eigenvalue, eigenvector) tuples
     eig_pairs = [(np.abs(eig_vals[i]), eig_vecs[:,i]) for i in range(len(eig_vals))]
     # Sort the (eigenvalue, eigenvector) tuples from high to low
@@ -168,7 +167,7 @@ def plot_variance(var_exp, cum_var_exp):
         plt.xlabel('Principal components')
         plt.legend(loc='best')
         plt.tight_layout()
-#        plt.show()
+        #plt.show()
 
 
 def plot_landmarks(X):
@@ -181,7 +180,7 @@ def plot_landmarks(X):
             else:
                 y.append(elem)
 
-    plt.plot(x[:400], y[:400], '-.')
+    plt.plot(x, y, '-.')
     plt.show()
 
 if __name__ == "__main__":
@@ -191,7 +190,7 @@ if __name__ == "__main__":
     # preprocess the landmarks 
     d, Z, tform = procrustes(landmarks.T, landmarks[0:1].T)
     # PCA
-    red_lands = pca(landmarks)
+    red_lands = pca(Z.T)
     # Load radiographs
     directory = "ProjectData/_Data/Radiographs"
     filenames = fnmatch.filter(os.listdir(directory),'*.tif')
