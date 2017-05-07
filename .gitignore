@@ -1,3 +1,4 @@
 .projectlie
 .DS_Store
 final/.projectile
+*.pyc
