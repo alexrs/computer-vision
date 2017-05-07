@@ -18,6 +18,18 @@ def plot_variance(eig_vals):
         plt.show()
 
 
+def plot_shape(X):
+    x = []
+    y = []
+    for i, elem in enumerate(X):
+        if i % 2 == 0:
+            x.append(elem)
+        else:
+            y.append(elem)
+
+    plt.plot(x, y, '.')
+    plt.show()
+            
 def plot_landmarks(X):
     x = []
     y = []
