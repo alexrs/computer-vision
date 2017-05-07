@@ -8,7 +8,7 @@ import cv2
 class Shape:
 
     def __init__(self, data):
-        self.data = data
+        self._data = data
 
     @classmethod
     def from_points(cls, x, y):
@@ -20,19 +20,19 @@ class Shape:
         return cls(np.array(points))
         
     def mean(self):
-        return np.mean(self.data, axis=0)
+        return np.mean(self._data, axis=0)
 
     def norm(self):
-        return np.linalg.norm(self.data, axis=0)
+        return np.linalg.norm(self._data, axis=0)
 
     def shape(self):
-        return self.data.shape
+        return self._data.shape
 
     def center(self):
-        return Shape(self.data - self.mean())
+        return Shape(self._data - self.mean())
 
     def normalize(self):
-        return Shape(self.data / self.norm())
+        return Shape(self._data / self.norm())
 
     def align(self, other):
         """
@@ -44,12 +44,12 @@ class Shape:
         :param other: The other shape
         :return: A shape aligned to other
         """
-        other_data = other.data
-        cov = np.dot(other_data.T, self.data)
+        other_data = other.data()
+        cov = np.dot(other_data.T, self._data)
         btb = np.dot(other_data.T, other_data)
         pic = np.linalg.pinv(cov)
         r = np.dot(pic, btb)
-        return Shape(np.dot(self.data, r))
+        return Shape(np.dot(self._data, r))
 
     def scale(self, factor):
         return Shape(factor * self._data)
@@ -57,38 +57,17 @@ class Shape:
     def translate(self, displacement):
         return Shape(self._data + displacement)
 
-    def rotate(self, theta_in_radians):
-        rotation = np.array(
-            [[math.cos(theta_in_radians), -math.sin(theta_in_radians)],
-             [math.sin(theta_in_radians), math.cos(theta_in_radians)]])
-        return Shape(np.dot(self._data, rotation))
-
     def collapse(self):
-        n, _ = self.data.shape
-        return np.reshape(self.data, 2 * n)
+        n, _ = self._data.shape
+        return np.reshape(self._data, 2 * n)
+
+    def data(self):
+        return self._data
 
 class AlignedShape:
 
     def __init__(self, shapes,  tol=1e-7, max_iters=10000):
-    # 1. Rotate, scale and translate each shape to align with the
-    # first shape in the set.
-    # 2. Repeat
-    # |   2.1. Calculate the mean shape from the aligned shapes
-    # |   2.2. Normalize the orientation, scale and origin of the
-    # |   current mean to suitable defaults
-    # |   2.3. Realign every shape with the current mean
-    # 3. Until the process converges
-        self._aligned_shapes = [shape.center() for shape in shapes]
-        self._mean_shape = self._aligned_shapes[0].normalize()
-        for num_iters in range(max_iters):
-            for i in range(len(self._aligned_shapes)):
-                self._aligned_shapes[i] = self._aligned_shapes[i].align(self._mean_shape)
-            previous_mean_shape = self._mean_shape
-            self._mean_shape = Shape(
-                np.mean(np.array([shape.data for shape in self._aligned_shapes])
-                        , axis=0)).center().normalize()
-            if np.linalg.norm(self._mean_shape.data - previous_mean_shape.data) < tol:
-                break
+        self._align(shapes, tol, max_iters)
             
     def mean_shape(self):
         """
@@ -100,10 +79,33 @@ class AlignedShape:
     def shapes(self):
         return self._aligned_shapes
 
-    def raw(self):
+    def data(self):
         """
         Returns the shapes as a numpy matrix.
         :return: a Nxd*d numpy matrix containing the shapes
         """
         return np.array([shape.collapse() for shape in self._aligned_shapes])
+
+    def _align(self, shapes,  tol, max_iters):
+        """
+        1. Rotate, scale and translate each shape to align with the
+        first shape in the set.
+        2. Repeat
+        |   2.1. Calculate the mean shape from the aligned shapes
+        |   2.2. Normalize the orientation, scale and origin of the
+        |   current mean to suitable defaults
+        |   2.3. Realign every shape with the current mean
+        3. Until the process converges
+        """
+        self._aligned_shapes = [shape.center() for shape in shapes]
+        self._mean_shape = self._aligned_shapes[0].normalize()
+        for num_iters in range(max_iters):
+            for i in range(len(self._aligned_shapes)):
+                self._aligned_shapes[i] = self._aligned_shapes[i].align(self._mean_shape)
+            previous_mean_shape = self._mean_shape
+            self._mean_shape = Shape(
+                np.mean(np.array([shape.data() for shape in self._aligned_shapes])
+                        , axis=0)).center().normalize()
+            if np.linalg.norm(self._mean_shape.data() - previous_mean_shape.data()) < tol:
+                break
 
