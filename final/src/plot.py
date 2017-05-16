@@ -41,7 +41,7 @@ def landmarks(X):
             else:
                 y.append(elem)
 
-    plt.plot(x, y, '.')
+    plt.plot(x, y, '-')
     plt.show()
 
 def image(img):

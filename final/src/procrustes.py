@@ -20,6 +20,16 @@ class Procrustes(object):
         self._procrustes(shapes, max_iters, tol)
 
     def _procrustes(self, shapes, max_iters, tol):
+        """
+        1. Rotate, scale and translate each shape to align with the
+        first shape in the set.
+        2. Repeat
+        |   2.1. Calculate the mean shape from the aligned shapes
+        |   2.2. Normalize the orientation, scale and origin of the
+        |   current mean to suitable defaults
+        |   2.3. Realign every shape with the current mean
+        3. Until the process converges
+        """
         # Align shapes and select a 'base' shape to be the reference in aligment
         self._aligned_shapes = [shape.center() for shape in shapes]
         self._mean_shape = self._aligned_shapes[0].normalize()
