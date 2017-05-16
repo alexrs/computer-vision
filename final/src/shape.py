@@ -1,55 +1,143 @@
+"""
+Authors: Alejandro Rodriguez, Fernando Collado
+"""
 import numpy as np
-from scipy import spatial
-import math
-import numpy as np
-import matplotlib.pyplot as plt
 import cv2
 
-class Shape:
+class Shape(object):
+    """
+    Shape represents a shape, that is a figure created
+    from a list of landmarks
+    """
 
     def __init__(self, data):
         self._data = data
 
     @classmethod
-    def from_points(cls, x, y):
-        if len(x) != len(y):
+    def from_points(cls, x_coord, y_coord):
+        """
+        from_points creates a Shape given two list of points
+
+        Param:
+            x_coord - x-coordinates of the Shape
+            y_coord - y-coordinates of the Shape
+        """
+
+        if len(x_coord) != len(y_coord):
             raise AssertionError("Lenght should be equal")
         points = []
-        for i in range(len(x)):
-            points.append([x[i], y[i]])
+        for i in range(len(x_coord)):
+            points.append([x_coord[i], y_coord[i]])
         return cls(np.array(points))
-        
+
     def mean(self):
+        """
+        Returns the mean of a Shape
+        """
         return np.mean(self._data, axis=0)
 
-    def norm(self):
+    def _norm(self):
+        """
+        returns the norm of the data
+        """
         return np.linalg.norm(self._data, axis=0)
 
     def shape(self):
+        """
+        returns the shape of the data
+        """
         return self._data.shape
 
     def center(self):
+        """
+        centers the shape to the origin
+        """
         return Shape(self._data - self.mean())
 
     def normalize(self):
-        return Shape(self._data / self.norm())
+        """
+        normalize the data of a Shape
+        """
+        return Shape(self._data / self._norm())
+
+    def align_params(self, this, other):
+        """Computes the optimal parameters for the alignment of two shapes.
+
+        We wish to translate, scale and rotate x1 by (t, s, theta) so as to minimise
+        |t+s*A*x1 - x2|, where A performs a rotation of a shape x by theta.
+
+        Based on:
+            An introduction to Active Shape Models - Appenix D
+
+        Args:
+            x1, x2: Two shapes with each as format [x0,x1...xn,y0,y1...yn].
+
+        Returns:
+            The optimal parameters t, s and theta to align x1 with x2.
+
+        """
+        # work in vector format
+        x1 = this.collapse()
+        x2 = other.collapse()
+
+        l1 = len(x1)/2
+        l2 = len(x2)/2
+
+        # make sure both shapes are mean centered for computing scale and rotation
+        x1_centroid = np.array([np.mean(x1[:l1]), np.mean(x1[l1:])])
+        x2_centroid = np.array([np.mean(x2[:l2]), np.mean(x2[l2:])])
+        x1 = [x - x1_centroid[0] for x in x1[:l1]] + [y - x1_centroid[1] for y in x1[l1:]]
+        x2 = [x - x2_centroid[0] for x in x2[:l2]] + [y - x2_centroid[1] for y in x2[l2:]]
+
+        # a = (x1.x2)/|x1|^2
+        norm_x1_sq = (np.linalg.norm(x1)**2)
+        a = np.dot(x1, x2) / norm_x1_sq
+
+        # b = sum_1->l2(x1_i*y2_i - y1_i*x2_i)/|x1|^2
+        b = (np.dot(x1[:l1], x2[l2:]) - np.dot(x1[l1:], x2[:l2])) / norm_x1_sq
+
+        # s^2 = a^2 + b^2
+        s = np.sqrt(a**2 + b**2)
+
+        # theta = arctan(b/a)
+        theta = np.arctan(b/a)
+
+        # the optimal translation is chosen to match their centroids
+        t = x2_centroid - x1_centroid
+
+        return t, s, theta
+
 
     def align(self, other):
+        """Aligns two mean centered shapes.
+
+        Scales and rotates x1 by (s, theta) so as to minimise |s*A*x1 - x2|,
+        where A performs a rotation of a shape x by theta.
+
+        Based on:
+            An introduction to Active Shape Models - Appenices A & D
+
+        Args:
+            x1: The shape which will be scaled and rotated.
+            x2: The shape to which x1 will be aligned.
+
+        Returns:
+            The aligned version of x1.
+
         """
-        Aligns the current shape (HAS TO BE CENTERED)
-        to the other shape (HAS TO BE CENTERED AS WELL) by
-        finding a transformation matrix  r by solving the
-        least squares solution of the equation
-        self*r = other
-        :param other: The other shape
-        :return: A shape aligned to other
-        """
+        
+        # get params
+        this_data = self._data
         other_data = other.data()
-        cov = np.dot(other_data.T, self._data)
-        btb = np.dot(other_data.T, other_data)
-        pic = np.linalg.pinv(cov)
-        r = np.dot(pic, btb)
-        return Shape(np.dot(self._data, r))
+        _, s, theta = self.align_params(this_data, other_data)
+
+        # align the two shapes
+        this_data = this_data.rotate(theta)
+        this_data = this_data.scale(s)
+
+        # project into tangent space by scaling x1 with 1/(x1.x2)
+        r = np.dot(this_data.collapse(), other_data.collapse())
+        return Shape(this_data.collapse()*(1.0/r))
 
     def scale(self, factor):
         return Shape(factor * self._data)
@@ -64,9 +152,17 @@ class Shape:
     def data(self):
         return self._data
 
-class AlignedShape:
+    def rotation(self, theta, s):
+        """
+         Construct rotation and translation matrix (M and t)
+        """
+        M = np.array([[s*np.cos(theta), -s*np.sin(theta)], 
+            [s*np.sin(theta),  s*np.cos(theta)]]).reshape(2, 2)
+        return M
 
-    def __init__(self, shapes,  tol=1e-7, max_iters=10000):
+class AlignedShape(object):
+
+    def __init__(self, shapes, tol=1e-7, max_iters=10000):
         self._align(shapes, tol, max_iters)
             
     def mean_shape(self):

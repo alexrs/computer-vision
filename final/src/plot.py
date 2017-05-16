@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
 
-def plot_variance(eig_vals):
+def variance(eig_vals):
     tot = sum(eig_vals)
     var_exp = [(i / tot)*100 for i in sorted(eig_vals, reverse=True)]
     cum_var_exp = np.cumsum(var_exp)
@@ -18,7 +19,7 @@ def plot_variance(eig_vals):
         plt.show()
 
 
-def plot_shape(X):
+def shape(X):
     x = []
     y = []
     for i, elem in enumerate(X):
@@ -30,7 +31,7 @@ def plot_shape(X):
     plt.plot(x, y, '.')
     plt.show()
             
-def plot_landmarks(X):
+def landmarks(X):
     x = []
     y = []
     for i, Y in enumerate(X):
@@ -41,4 +42,8 @@ def plot_landmarks(X):
                 y.append(elem)
 
     plt.plot(x, y, '.')
+    plt.show()
+
+def image(img):
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
     plt.show()

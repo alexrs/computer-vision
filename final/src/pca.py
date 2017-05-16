@@ -1,3 +1,6 @@
+"""
+Authors: Alejandro Rodriguez, Fernando Collado
+"""
 import numpy as np
 import plot
 
