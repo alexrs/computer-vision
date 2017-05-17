@@ -7,6 +7,7 @@ See:
     http://www.ijmlc.org/papers/133-I307.pdf
     http://www.iaescore.com/journals/index.php/IJECE/article/view/5305/5058
     http://docs.opencv.org/trunk/d9/d61/tutorial_py_morphological_ops.html
+    http://ieeexplore.ieee.org/document/6805749/?part=1
     http://www.bogotobogo.com/python/OpenCV_Python/python_opencv3_Image_Gradient_Sobel_Laplacian_Derivatives_Edge_Detection.php
 
 Authors: Alejandro Rodriguez, Fernando Collado
@@ -15,20 +16,20 @@ import cv2
 
 class Enhancement(object):
     """
-    This class represent a radiograph
+    Enhacement algorithms to improve the radiographs
     """
 
     @staticmethod
     def fastNlMeansDenoising(img):
         """
-
+        Reduce noise in the image
         """
         return cv2.fastNlMeansDenoising(img, 10, 10, 7, 21)
 
     @staticmethod
     def equalizeHist(img):
         """
-
+        equalize the histogram of the image
         """
         return  cv2.equalizeHist(img)
 

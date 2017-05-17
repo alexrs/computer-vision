@@ -1,6 +1,6 @@
 """
 Authors: Alejandro Rodriguez, Fernando Collado
-file that contains the logig needed to load the data
+file that contains the logic needed to load the data
 """
 import os
 import fnmatch

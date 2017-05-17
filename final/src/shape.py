@@ -60,48 +60,49 @@ class Shape(object):
         """
         return Shape(self._data / self._norm())
 
-    def align_params(self, other):
+    def align_parameters(self, other):
         """
-        TODO: Comment
+        Align two parameters and returns the translation, scale factor and angle of rotation
         """
 
         this = self.collapse()
         other = other.collapse()
 
-        l1 = len(this)/2
-        l2 = len(other)/2
+        this_length = len(this)/2
+        other_length = len(other)/2
 
         # make sure both shapes are mean centered for computing scale and rotation
-        this_centroid = np.array([np.mean(this[:l1]), np.mean(this[l1:])])
-        other_centroid = np.array([np.mean(other[:l2]), np.mean(other[l2:])])
-        this = [x - this_centroid[0] for x in this[:l1]] + [y - this_centroid[1] for y in this[l1:]]
-        other = [x - other_centroid[0] for x in other[:l2]] + [y - other_centroid[1] for y in other[l2:]]
+        this_centroid = np.array([np.mean(this[:this_length]), np.mean(this[this_length:])])
+        other_centroid = np.array([np.mean(other[:other_length]), np.mean(other[other_length:])])
+        this = [x - this_centroid[0] for x in this[:this_length]] + [y - this_centroid[1] for y in this[this_length:]]
+        other = [x - other_centroid[0] for x in other[:other_length]] + [y - other_centroid[1] for y in other[other_length:]]
 
         # a = (x1.x2)/|x1|^2
         norm_this_sq = (np.linalg.norm(this)**2)
         a = np.dot(this, other) / norm_this_sq
 
-        # b = sum_1->l2(this_i*y2_i - y1_i*other_i)/|this|^2
-        b = (np.dot(this[:l1], other[l2:]) - np.dot(this[l1:], other[:l2])) / norm_this_sq
+        # b = sum_1->other_length(this_i*y2_i - y1_i*other_i)/|this|^2
+        b = (np.dot(this[:this_length], other[other_length:]) 
+             - np.dot(this[this_length:], other[:other_length])) / norm_this_sq
 
         # s^2 = a^2 + b^2
-        s = np.sqrt(a**2 + b**2)
+        scale = np.sqrt(a**2 + b**2)
 
         # theta = arctan(b/a)
         theta = np.arctan(b/a)
 
         # the optimal translation is chosen to match their centroids
-        t = other_centroid - this_centroid
+        translation = other_centroid - this_centroid
 
-        return t, s, theta
+        return translation, scale, theta
 
 
     def align(self, other):
         """
-        TODO: Comment
+        return a new shape aligned with other shape
         """
         # get params
-        _, s, theta = self.align_params(other)
+        _, s, theta = self.align_parameters(other)
 
         # align the two shapes
         this_data = self.rotate(theta)
@@ -109,10 +110,11 @@ class Shape(object):
 
         # project into tangent space by scaling x1 with 1/(x1.x2)
         r = np.dot(this_data.collapse(), other.collapse())
-        return Shape(this_data.data() / r)
+        return Shape(this_data.collapse()*(1.0/r))
 
     def rotate(self, angle):
         """
+        Returns a new shape rotate a given angle
         """
         # create rotation matrix
         matrix = np.array([[np.cos(angle), np.sin(angle)],
@@ -131,26 +133,26 @@ class Shape(object):
 
     def scale(self, factor):
         """
-        TODO: comment
+        Returns a new shape scaled by a factor
         """
         return Shape(factor * self._data)
 
     def translate(self, displacement):
         """
-        TODO: Comment
+        Returns a new shape translated a displacement amount
         """
         return Shape(self._data + displacement)
 
     def collapse(self):
         """
-        TODO: Comment
+        Return the data as a list [x1, x2, ..., xn, y1, y2, ..., yn]
         """
-        n, _ = self._data.shape
-        return np.reshape(self._data, 2 * n)
+        return np.hstack((self._data[:, 0], self._data[:, 1]))
 
     def data(self):
         """
-        TODO: Comment
+        Return the data as a list of points
+        [[x1, y1], [x2, y2] ... [xn, yn]]
         """
         return self._data
 

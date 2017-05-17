@@ -5,6 +5,8 @@ import numpy as np
 import plot
 
 class PCA:
+    """
+    """
 
     def __init__(self, data, dims=13):
         self._data = data
@@ -25,7 +27,7 @@ class PCA:
         cov = np.cov(self._data.T)
         # calculate eigenvectors & eigenvalues of the covariance matrix
         self._evals, self._evecs = np.linalg.eigh(cov)
-        #plot.plot_variance(self._evals)    
+        #plot.variance(self._evals)
         # sort eigenvalue in decreasing order
         idx = np.argsort(self._evals)[::-1]
         self._evecs = self._evecs[:,idx]
@@ -36,18 +38,28 @@ class PCA:
         self._evecs = self._evecs[:, :dims_rescaled_data]
 
     def project(self):
+        """
+        """
         return np.dot(self._evecs.T, (self._data - self._mean).T)
 
     def reconstruct(self):
+        """
+        """
         return np.dot(self._evecs, self.project()).T + self._mean
 
     def mean(self):
+        """
+        """
         return self._mean
 
     def eigenvalues(self):
+        """
+        """
         return self._evals
 
     def eigenvectors(self):
+        """
+        """
         return self._evecs
 
     def test_PCA(self, data):

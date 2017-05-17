@@ -14,6 +14,7 @@ class Procrustes(object):
             and Application', Cootes et al.
          Appendix A: 'An Introduction to Active Shape Models', Cootes.
          Slide 8 of http://www.robots.ox.ac.uk/~jmb/lectures/InformaticsLecture6.pdf
+         http://www.cse.psu.edu/~rtc12/CSE586/lectures/cse586Shape1.pdf
     """
 
     def __init__(self, shapes, max_iters=10000, tol=1e-7):
