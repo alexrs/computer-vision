@@ -14,6 +14,21 @@ class Shape(object):
         self._data = data
 
     @classmethod
+    def from_list(cls, landmark):
+        """
+        from_list creates a Shape given a list of points [x1, y1, x2, y2, ... , xn, yn]
+        """
+        x = []
+        y = []
+        for i, line in enumerate(landmark):
+            if i % 2 == 0:
+                x.append(float(line))
+            else:
+                y.append(float(line))
+        return Shape.from_points(x, y)
+
+
+    @classmethod
     def from_points(cls, x_coord, y_coord):
         """
         from_points creates a Shape given two list of points

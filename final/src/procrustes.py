@@ -17,7 +17,7 @@ class Procrustes(object):
          http://www.cse.psu.edu/~rtc12/CSE586/lectures/cse586Shape1.pdf
     """
 
-    def __init__(self, shapes, max_iters=10000, tol=1e-7):
+    def __init__(self, shapes, max_iters=100000, tol=1e-7):
         self._procrustes(shapes, max_iters, tol)
 
     def _procrustes(self, shapes, max_iters, tol):
@@ -46,7 +46,7 @@ class Procrustes(object):
             self._mean_shape = self._new_mean_shape(self._aligned_shapes)
 
             # Check if the value of the mean shape has varied less than the tolerance
-            if np.linalg.norm(self._mean_shape.data() - previous_mean_shape.data()) < tol:
+            if np.linalg.norm(self._mean_shape.collapse() - previous_mean_shape.collapse()) < tol:
                 break
 
 

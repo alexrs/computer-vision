@@ -20,7 +20,7 @@ class Dataset(object):
         """
         self.path = path
 
-    def get_landmarks(self, incisor, mirrored=False):
+    def get_landmarks(self, incisor, mirrored=True):
         """
         creates an array that contains all the landmarks of a
         directory.
@@ -30,20 +30,31 @@ class Dataset(object):
 
         TODO: Add mirrored landmarks
         """
-        # get the filenames that matches the extension
-        directory = self.path + "Landmarks/original/"
-        # load the landmarks of a given incisor
-        filenames = fnmatch.filter(os.listdir(directory), '*-{}.txt'.format(str(incisor)))
-        # create the array
-        landmarks = []
-        # iterate over the files to create a matrix containing the
-        # landmarks
-        for filename in filenames:
-            file_in = directory + "/" + filename
-            lands = np.loadtxt(file_in, dtype=float)
-            landmarks.append(self._load_landmark(lands))
+        folders = ["original"]
+        if mirrored:
+            folders.append("mirrored")
 
-        return landmarks
+        # If mirror, the incisor index changes
+        mirror_map = {1:4, 2:3, 3:2, 4:1, 5:8, 6:7, 7:6, 8:5}
+
+        # create the array
+        shapes = []
+        for folder in folders:
+            # change the index of the incisor if mirrored
+            if folder == "mirrored":
+                incisor = mirror_map[incisor]
+            # get the filenames that matches the extension
+            directory = self.path + "Landmarks/{}/".format(folder)
+            # load the landmarks of a given incisor
+            filenames = fnmatch.filter(os.listdir(directory), '*-{}.txt'.format(str(incisor)))
+            # iterate over the files to create a matrix containing the
+            # landmarks
+            for filename in filenames:
+                file_in = directory + "/" + filename
+                landmark = np.loadtxt(file_in, dtype=float)
+                shapes.append(Shape.from_list(landmark))
+
+        return shapes
 
     def get_images(self):
         """
@@ -58,17 +69,4 @@ class Dataset(object):
             images.append(img)
 
         return np.array(images)
-
-    def _load_landmark(self, landmark):
-        """
-        _load_landmark returns a Shape given a landmark
-        """
-        x = []
-        y = []
-        for i, line in enumerate(landmark):
-            if i % 2 == 0:
-                x.append(float(line))
-            else:
-                y.append(float(line))
-        return Shape.from_points(x, y)
 

@@ -20,11 +20,10 @@ class PCA:
         returns: data transformed in 2 dims/columns + regenerated original data
         pass in: data as 2D NumPy array
         """
-        m, n = self._data.shape
         # mean center the data
         self._mean = np.mean(self._data, axis=0)
         # calculate the covariance matrix
-        cov = np.cov(self._data.T)
+        cov = np.cov(self._data)
         # calculate eigenvectors & eigenvalues of the covariance matrix
         self._evals, self._evecs = np.linalg.eigh(cov)
         #plot.variance(self._evals)
