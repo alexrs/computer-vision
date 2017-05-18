@@ -1,7 +1,6 @@
 """"
 Authors: Alejandro Rodriguez, Fernando Collado
 """
-
 from procrustes import Procrustes
 from pca import PCA
 from shape import Shape
@@ -15,9 +14,9 @@ class ActiveShapeModel(object):
         # Perform procrustes analysis
         self._procrustes = Procrustes(shapes)
         # get the aligned shapes
-        self._aligned_shapes = Shape.matrix(self._procrustes.get_aligned_shapes())
+        self._aligned_shapes = self._procrustes.get_aligned_shapes()
         # perform PCA on the aligned shapes
-        self._pca = PCA(self._aligned_shapes)
+        self._pca = PCA(Shape.matrix(self._aligned_shapes)) 
 
     def pca(self):
         """
@@ -30,5 +29,11 @@ class ActiveShapeModel(object):
         Returns the mean shape of the model
         """
         return self._procrustes.get_mean_shape()
+
+    def get_aligned_shapes(self):
+        """
+        Returns the aligned shapes
+        """
+        return self._aligned_shapes
 
 

@@ -9,6 +9,7 @@ from shape import Shape
 import cv2
 import re
 
+
 class Dataset(object):
     '''
     This class implements the needed methods to load the landmarks
@@ -32,33 +33,28 @@ class Dataset(object):
 
         """
         directory = self.path + "Landmarks/original/"
-        files = sorted(fnmatch.filter(os.listdir(directory), "*-{}.txt".format(str(incisor))),
-                       key=lambda x: int(re.search('[0-9]+', x).group()))
+        files = sorted(fnmatch.filter(os.listdir(directory), "*-{}.txt".format
+            (str(incisor))), key=lambda x: int(re.search('[0-9]+', x).group())
+            )
         shapes = []
         for filename in files:
             shapes.append(self.get_landmarks(directory + filename))
         return shapes
 
     def load_mirrored(self, incisor):
-        """Extends the training set by including the mirrored landmarks of
-        the matching incisor in the y-axis mirrored radiograph.
-
-        Args:
-            incisor_nr : identifier of tooth
-
-        Returns:
-            A list containing all landmark models.
+        """
         """
         original = self.load(incisor)
-        mirror_map = {1:4, 2:3, 3:2, 4:1, 5:8, 6:7, 7:6, 8:5}
-        mirrored = [shape.mirror_y() for shape in self.load(mirror_map[incisor])]
+        mirror_map = {1: 4, 2: 3, 3: 2, 4: 1, 5: 8, 6: 7, 7: 6, 8: 5}
+        mirrored = [shape.mirror_y() for shape in self.load(mirror_map[incisor
+            ])]
         return original + mirrored
 
     def get_landmarks(self, file_in):
         """
         """
         landmark = np.loadtxt(file_in, dtype=float)
-        return Shape.from_list(landmark)
+        return Shape.from_list_file(landmark)
 
     def get_images(self):
         """
@@ -73,4 +69,3 @@ class Dataset(object):
             images.append(img)
 
         return np.array(images)
-

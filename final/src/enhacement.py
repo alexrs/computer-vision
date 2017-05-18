@@ -14,6 +14,7 @@ Authors: Alejandro Rodriguez, Fernando Collado
 """
 import cv2
 
+
 class Enhancement(object):
     """
     Enhacement algorithms to improve the radiographs
@@ -73,27 +74,27 @@ class Enhancement(object):
 
     @staticmethod
     def closing(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         return cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
 
     @staticmethod
     def opening(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         return cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
 
     @staticmethod
     def top_hat(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(10,10))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
         return cv2.morphologyEx(img, cv2.MORPH_TOPHAT, kernel)
 
     @staticmethod
     def black_hat(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         return cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
 
     @staticmethod
     def morfological_gradient(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         return cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
 
     @staticmethod
@@ -104,11 +105,11 @@ class Enhancement(object):
             http://www.bogotobogo.com/python/OpenCV_Python/python_opencv3_Image_Gradient_Sobel_Laplacian_Derivatives_Edge_Detection.php
         """
         # remove noise
-        img = cv2.GaussianBlur(img, (3,3), 0)
+        img = cv2.GaussianBlur(img, (3, 3), 0)
         # convolute with proper kernels
-        laplacian = cv2.Laplacian(img,cv2.CV_64F)
-        sobelx = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=5)  # x
-        sobely = cv2.Sobel(img,cv2.CV_64F,0,1,ksize=5)  # y
+        laplacian = cv2.Laplacian(img, cv2.CV_64F)
+        sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=5)  # x
+        sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=5)  # y
 
         abs_x = cv2.convertScaleAbs(sobelx)
         abs_y = cv2.convertScaleAbs(sobely)

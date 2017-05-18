@@ -54,7 +54,7 @@ class Procrustes(object):
             # 7: if converged, do not return to 4
             if ((self._mean_shape.collapse() - new_mean_shape.collapse()) < tol).all():
                 print "Procrustes", i
-                #print self._mean_shape.data()
+                print self._mean_shape.data()
                 break
 
             self._mean_shape = new_mean_shape
@@ -73,7 +73,7 @@ class Procrustes(object):
 
         # project into tangent space by scaling x1 with 1/(x1.x2)
         xx = np.dot(x1.collapse(), x2.collapse())
-        return Shape.from_list(x1.collapse()*(1.0/xx))
+        return Shape.from_list_consecutive(x1.collapse()*(1.0/xx))
 
 
     def align_params(self, x1, x2):
@@ -129,5 +129,5 @@ class Procrustes(object):
         for shape in aligned_shapes:
             mean_shape.append(shape.collapse())
         mean_shape = np.array(mean_shape)
-        return Shape.from_list(np.mean(mean_shape, axis=0))
+        return Shape.from_list_consecutive(np.mean(mean_shape, axis=0))
 

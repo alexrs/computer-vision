@@ -2,6 +2,7 @@
 Authors: Alejandro Rodriguez, Fernando Collado
 """
 import numpy as np
+import cv2
 
 class Shape(object):
     """
@@ -13,12 +14,25 @@ class Shape(object):
         self._data = data
 
     @classmethod
-    def from_list(cls, landmark):
+    def from_list_file(cls, landmark):
         """
-        from_list creates a Shape given a list of points [x1, x2, x3, ..., y1, y2, y3, ...]
+        from_list creates a Shape given a list of points [x1, y1, x2, y2, ... , xn, yn]
         """
-        return Shape.from_points(landmark[:len(landmark)/2], landmark[len(landmark)/2:])
+        x = []
+        y = []
+        for i, line in enumerate(landmark):
+            if i % 2 == 0:
+                x.append(float(line))
+            else:
+                y.append(float(line))
+        return Shape.from_points(x, y)
 
+    @classmethod
+    def from_list_consecutive(cls, landmark):
+        """
+        Creates a Shape from a list of points in format [x1, x2, ..., y1, y2, ...]
+        """
+        return Shape(np.array((landmark[:len(landmark)/2], landmark[len(landmark)/2:])).T)
 
     @classmethod
     def from_points(cls, x_coord, y_coord):
@@ -112,8 +126,10 @@ class Shape(object):
 
     def collapse(self):
         """
-        Return the data as a list [x1, x2, ..., xn, y1, y2, ..., yn]
+        Return the data as a list [x1, y1, ..., xn, yn]
         """
+        #n, _ = self.shape()
+        #return np.reshape(self._data, 2*n)
         return np.hstack((self._data[:, 0], self._data[:, 1]))
 
     def data(self):
