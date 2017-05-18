@@ -40,10 +40,6 @@ def main():
     # train
     model = ActiveShapeModel(train_data)
     pca = model.pca()
-    print "Mean:", pca.mean()
-    print "Evals", pca.eigenvalues()
-    print "Evecs", pca.eigenvectors()
-    print model.mean_shape().data()
 
     # preprocess the landmarks
     # Plot.landmarks(model.mean_shape().data())

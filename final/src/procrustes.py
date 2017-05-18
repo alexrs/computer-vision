@@ -53,8 +53,8 @@ class Procrustes(object):
 
             # 7: if converged, do not return to 4
             if ((self._mean_shape.collapse() - new_mean_shape.collapse()) < tol).all():
-                print "Procrustes", i
-                print self._mean_shape.data()
+                #print "Procrustes", i
+                #print self._mean_shape.data()
                 break
 
             self._mean_shape = new_mean_shape
