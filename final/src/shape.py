@@ -2,7 +2,6 @@
 Authors: Alejandro Rodriguez, Fernando Collado
 """
 import numpy as np
-import cv2
 
 class Shape(object):
     """
@@ -16,16 +15,9 @@ class Shape(object):
     @classmethod
     def from_list(cls, landmark):
         """
-        from_list creates a Shape given a list of points [x1, y1, x2, y2, ... , xn, yn]
+        from_list creates a Shape given a list of points [x1, x2, x3, ..., y1, y2, y3, ...]
         """
-        x = []
-        y = []
-        for i, line in enumerate(landmark):
-            if i % 2 == 0:
-                x.append(float(line))
-            else:
-                y.append(float(line))
-        return Shape.from_points(x, y)
+        return Shape.from_points(landmark[:len(landmark)/2], landmark[len(landmark)/2:])
 
 
     @classmethod
@@ -45,17 +37,24 @@ class Shape(object):
             points.append([x_coord[i], y_coord[i]])
         return cls(np.array(points))
 
+    def transform(self, translate, scale, theta):
+        """
+        Performs a transformation, rotating by theta, scaling by scale, and translating by traslate
+        """
+        return self.rotate(theta).scale(scale).translate(translate)
+
+    def inverse_transform(self, translate, scale, theta):
+        """
+        Performs the inverse transformation of the given arguments
+        """
+        return self.translate(-translate).scale(1/scale).rotate(-theta)
+
+
     def mean(self):
         """
         Returns the mean of a Shape
         """
         return np.mean(self._data, axis=0)
-
-    def _norm(self):
-        """
-        returns the norm of the data
-        """
-        return np.linalg.norm(self._data, axis=0)
 
     def shape(self):
         """
@@ -72,60 +71,11 @@ class Shape(object):
     def normalize(self):
         """
         normalize the data of a Shape
+        http://kawahara.ca/how-to-normalize-vectors-to-unit-norm-in-python/
         """
-        return Shape(self._data / self._norm())
-
-    def align_parameters(self, other):
-        """
-        Align two parameters and returns the translation, scale factor and angle of rotation
-        """
-
-        this = self.collapse()
-        other = other.collapse()
-
-        this_length = len(this)/2
-        other_length = len(other)/2
-
-        # make sure both shapes are mean centered for computing scale and rotation
-        this_centroid = np.array([np.mean(this[:this_length]), np.mean(this[this_length:])])
-        other_centroid = np.array([np.mean(other[:other_length]), np.mean(other[other_length:])])
-        this = [x - this_centroid[0] for x in this[:this_length]] + [y - this_centroid[1] for y in this[this_length:]]
-        other = [x - other_centroid[0] for x in other[:other_length]] + [y - other_centroid[1] for y in other[other_length:]]
-
-        # a = (x1.x2)/|x1|^2
-        norm_this_sq = (np.linalg.norm(this)**2)
-        a = np.dot(this, other) / norm_this_sq
-
-        # b = sum_1->other_length(this_i*y2_i - y1_i*other_i)/|this|^2
-        b = (np.dot(this[:this_length], other[other_length:]) 
-             - np.dot(this[this_length:], other[:other_length])) / norm_this_sq
-
-        # s^2 = a^2 + b^2
-        scale = np.sqrt(a**2 + b**2)
-
-        # theta = arctan(b/a)
-        theta = np.arctan(b/a)
-
-        # the optimal translation is chosen to match their centroids
-        translation = other_centroid - this_centroid
-
-        return translation, scale, theta
-
-
-    def align(self, other):
-        """
-        return a new shape aligned with other shape
-        """
-        # get params
-        _, s, theta = self.align_parameters(other)
-
-        # align the two shapes
-        this_data = self.rotate(theta)
-        this_data = self.scale(s)
-
-        # project into tangent space by scaling x1 with 1/(x1.x2)
-        r = np.dot(this_data.collapse(), other.collapse())
-        return Shape(this_data.collapse()*(1.0/r))
+        total = np.sqrt(np.power(self.center().data(), 2).sum())
+        data = self._data.dot(1. / total)
+        return Shape(data)
 
     def rotate(self, angle):
         """
@@ -150,7 +100,9 @@ class Shape(object):
         """
         Returns a new shape scaled by a factor
         """
-        return Shape(factor * self._data)
+        mean = self.mean()
+        points = (self._data - mean).dot(factor) + mean
+        return Shape(points)
 
     def translate(self, displacement):
         """
@@ -170,6 +122,17 @@ class Shape(object):
         [[x1, y1], [x2, y2] ... [xn, yn]]
         """
         return self._data
+
+    def mirror_y(self):
+        """Mirrors this model around the y axis.
+
+        """
+        mean = self.mean()
+        points = self._data - mean
+        points[:, 0] *= -1
+        points = points + mean
+        points = points[::-1]
+        return Shape(points)
 
     @staticmethod
     def matrix(shapes):

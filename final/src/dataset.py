@@ -7,6 +7,7 @@ import fnmatch
 import numpy as np
 from shape import Shape
 import cv2
+import re
 
 class Dataset(object):
     '''
@@ -20,41 +21,44 @@ class Dataset(object):
         """
         self.path = path
 
-    def get_landmarks(self, incisor, mirrored=True):
+    def load(self, incisor):
+        """Collects all example landmark models for the incisor with the given number.
+
+        Args:
+            incisor_nr : identifier of tooth
+
+        Returns:
+            A list containing all landmark models.
+
         """
-        creates an array that contains all the landmarks of a
-        directory.
-
-        Params:
-            incisor - index of the incisor we want to segmentate
-
-        TODO: Add mirrored landmarks
-        """
-        folders = ["original"]
-        if mirrored:
-            folders.append("mirrored")
-
-        # If mirror, the incisor index changes
-        mirror_map = {1:4, 2:3, 3:2, 4:1, 5:8, 6:7, 7:6, 8:5}
-
-        # create the array
+        directory = self.path + "Landmarks/original/"
+        files = sorted(fnmatch.filter(os.listdir(directory), "*-{}.txt".format(str(incisor))),
+                       key=lambda x: int(re.search('[0-9]+', x).group()))
         shapes = []
-        for folder in folders:
-            # change the index of the incisor if mirrored
-            if folder == "mirrored":
-                incisor = mirror_map[incisor]
-            # get the filenames that matches the extension
-            directory = self.path + "Landmarks/{}/".format(folder)
-            # load the landmarks of a given incisor
-            filenames = fnmatch.filter(os.listdir(directory), '*-{}.txt'.format(str(incisor)))
-            # iterate over the files to create a matrix containing the
-            # landmarks
-            for filename in filenames:
-                file_in = directory + "/" + filename
-                landmark = np.loadtxt(file_in, dtype=float)
-                shapes.append(Shape.from_list(landmark))
-
+        for filename in files:
+            shapes.append(self.get_landmarks(directory + filename))
         return shapes
+
+    def load_mirrored(self, incisor):
+        """Extends the training set by including the mirrored landmarks of
+        the matching incisor in the y-axis mirrored radiograph.
+
+        Args:
+            incisor_nr : identifier of tooth
+
+        Returns:
+            A list containing all landmark models.
+        """
+        original = self.load(incisor)
+        mirror_map = {1:4, 2:3, 3:2, 4:1, 5:8, 6:7, 7:6, 8:5}
+        mirrored = [shape.mirror_y() for shape in self.load(mirror_map[incisor])]
+        return original + mirrored
+
+    def get_landmarks(self, file_in):
+        """
+        """
+        landmark = np.loadtxt(file_in, dtype=float)
+        return Shape.from_list(landmark)
 
     def get_images(self):
         """
