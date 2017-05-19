@@ -2,7 +2,6 @@
 Authors: Alejandro Rodriguez, Fernando Collado
 """
 import numpy as np
-import cv2
 
 class Shape(object):
     """
@@ -12,6 +11,14 @@ class Shape(object):
 
     def __init__(self, data):
         self._data = data
+
+    @staticmethod
+    def matrix(shapes):
+        """
+        Returns the shapes as a numpy matrix.
+        :return: a Nxd*d numpy matrix containing the shapes
+        """
+        return np.array([shape.collapse() for shape in shapes])
 
     @classmethod
     def from_list_file(cls, landmark):
@@ -34,7 +41,8 @@ class Shape(object):
         This arrangement is used in the papers
         "Modified Grey-level Models for Active Shape Model Training"
         """
-        return Shape(np.array((landmark[:len(landmark)/2], landmark[len(landmark)/2:])).T)
+        mid = len(landmark)/2
+        return Shape(np.array((landmark[:mid], landmark[mid:])).T)
 
     @classmethod
     def from_points(cls, x_coord, y_coord):
@@ -149,11 +157,3 @@ class Shape(object):
         points = points + mean
         points = points[::-1]
         return Shape(points)
-
-    @staticmethod
-    def matrix(shapes):
-        """
-        Returns the shapes as a numpy matrix.
-        :return: a Nxd*d numpy matrix containing the shapes
-        """
-        return np.array([shape.collapse() for shape in shapes])

@@ -43,6 +43,7 @@ class Dataset(object):
 
     def load_mirrored(self, incisor):
         """
+        load the images mirrored in the y axis
         """
         original = self.load(incisor)
         mirror_map = {1: 4, 2: 3, 3: 2, 4: 1, 5: 8, 6: 7, 7: 6, 8: 5}
@@ -51,18 +52,18 @@ class Dataset(object):
 
     def get_landmarks(self, file_in):
         """
+        returns a Shape given a list of landmarks from a file
         """
         landmark = np.loadtxt(file_in, dtype=float)
         return Shape.from_list_file(landmark)
 
-    def get_images(self):
+    def get_images(self, subpath=""):
         """
         get_images loads the radiographs and
         returns a numpy array containing the images
         """
-        directory = self.path + "Radiographs/"
+        directory = self.path + "Radiographs/" + subpath
         filenames = fnmatch.filter(os.listdir(directory), '*.tif')
-        print filenames
         images = []
         for fname in filenames:
             img = cv2.imread(directory + "/" + fname, 0)

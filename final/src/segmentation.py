@@ -25,6 +25,7 @@ def main():
     Main function of the incisor segmentation project
     """
 
+    print "Loading data..."
     # leave-one-out
     train_indices = range(14) # list from 0 to 13 that coincides with the number of images
     train_indices.remove(RADIOGRAPH - 1)
@@ -36,27 +37,37 @@ def main():
     
     # Divide between test data and train data
     test_data = landmarks[RADIOGRAPH - 1]
-    train_data = [landmarks[index] for index in train_indices]
+    train_data = [landmarks[i] for i in train_indices]
 
     # Get images
     imgs = dataset.get_images()
     # Divide between test images and train images
     test_img = imgs[RADIOGRAPH - 1]
-    train_imgs = [imgs[index] for index in train_indices]
+    train_imgs = [imgs[i] for i in train_indices]
 
+    print "Creating Active Shape Model..."
     # Create the Active Shape Model
     asm = ActiveShapeModel(train_data)
 
+    print "Enhancing images..."
+    # get the enhanced images (this will take a while)
+    enhanced_imgs = [Enhancement.enhance(img, i, save=True) for i, img in enumerate(imgs)]
+    test_enhanced_img = enhanced_imgs[RADIOGRAPH - 1]
+    train_enhanced_imgs = [enhanced_imgs[i] for i in train_indices]
+
     # Create the Grey Level Model
-    glm = GreyLevelModel()
-    grey_modes = glm.get_modes()
+    print "Creating Grey Level Models..."
+    #glm = GreyLevelModel(train_imgs, enhanced_imgs, train_data, ,PIXELS_TO_SAMPLE)
+    #grey_modes = glm.get_modes()
 
     # Get the initial position
-    init = Init(asm.mean_shape(), imgs[RADIOGRAPH - 1])
-    initial_fit = init.get_initial_fit()
+    print "Computing initial fit"
+    #init = Init(asm.mean_shape(), imgs[RADIOGRAPH - 1])
+    #initial_fit = init.get_initial_fit()
 
     # Fit the model to the image
-    fit = Fit(initial_fit, test_img)
+    print "Fitting the model..."
+    #fit = Fit(initial_fit, test_img)
 
     # Evaluation of the results
     # TODO

@@ -1,4 +1,6 @@
 """
+Authors: Alejandro Rodriguez, Fernando Collado
+
 This file encapsulates the methods used to enhance
 the radiographs
 
@@ -9,10 +11,9 @@ See:
     http://docs.opencv.org/trunk/d9/d61/tutorial_py_morphological_ops.html
     http://ieeexplore.ieee.org/document/6805749/?part=1
     http://www.bogotobogo.com/python/OpenCV_Python/python_opencv3_Image_Gradient_Sobel_Laplacian_Derivatives_Edge_Detection.php
-
-Authors: Alejandro Rodriguez, Fernando Collado
 """
 import cv2
+from utils import Utils
 
 
 class Enhancement(object):
@@ -20,12 +21,15 @@ class Enhancement(object):
     Enhacement algorithms to improve the radiographs
     """
 
-    def enhance(self, img):
+    @staticmethod
+    def enhance(img, index, save=False, path="../ProjectData/_Data/Radiographs/Enhanced"):
         """
         Returns the enhaced image
         """
         # 1. Denoise the image
         img = Enhancement.fastNlMeansDenoising(img)
+        # Bilateral filter is faster, but the results are worse (TODO: Tunning parameters)
+        # img = Enhancement.bilateral_filter(img)
         # 2. Apply top hat.
         top_hat_img = Enhancement.top_hat(img)
         # 3. Apply black hat
@@ -39,7 +43,12 @@ class Enhancement(object):
         img = Enhancement.clahe(img)
         # 7. Apply sobel to detect the edges (https://en.wikipedia.org/wiki/Sobel_operator)
         img = Enhancement.sobel(img)
+
+        if save:
+            Utils.create_dir(path)
+            cv2.imwrite("{}/{}.tif".format(path, str(index + 1).zfill(2)), img)
         return img
+
 
     @staticmethod
     def fastNlMeansDenoising(img):
@@ -59,7 +68,7 @@ class Enhancement(object):
     def bilateral_filter(img):
         """
         """
-        return cv2.bilateralFilter(img, 9, 175, 175)
+        return cv2.bilateralFilter(img, 15, 80, 80)
 
     @staticmethod
     def clahe(img):
