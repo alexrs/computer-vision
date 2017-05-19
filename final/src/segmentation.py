@@ -11,6 +11,10 @@ from plot import Plot
 from active_shape_model import ActiveShapeModel
 from enhacement import Enhancement
 from init import Init
+from fit import Fit
+from grey_level_model import GreyLevelModel
+
+import cv2
 
 INCISOR = 1  # The incisor we want to segmentate
 RADIOGRAPH = 1  # The radiograph we want to use
@@ -22,47 +26,40 @@ def main():
     """
 
     # leave-one-out
-    train_indices = range(0, 14)
+    train_indices = range(14) # list from 0 to 13 that coincides with the number of images
     train_indices.remove(RADIOGRAPH - 1)
 
     # Get the dataset
     dataset = Dataset()
     # Load landmarks
     landmarks = dataset.load_mirrored(INCISOR)
-
+    
+    # Divide between test data and train data
     test_data = landmarks[RADIOGRAPH - 1]
     train_data = [landmarks[index] for index in train_indices]
 
+    # Get images
     imgs = dataset.get_images()
+    # Divide between test images and train images
     test_img = imgs[RADIOGRAPH - 1]
     train_imgs = [imgs[index] for index in train_indices]
 
-    # train
-    model = ActiveShapeModel(train_data)
-    pca = model.pca()
+    # Create the Active Shape Model
+    asm = ActiveShapeModel(train_data)
 
-    # preprocess the landmarks
-    # Plot.landmarks(model.mean_shape().data())
-    # Load radiographs
-    # img = Enhancement.sobel(imgs[RADIOGRAPH - 1])
-    #plot.image(img)
+    # Create the Grey Level Model
+    glm = GreyLevelModel()
+    grey_modes = glm.get_modes()
 
-    # Init(model.mean_shape(), imgs[RADIOGRAPH - 1])
-    # Improve quality of dental radiographs
+    # Get the initial position
+    init = Init(asm.mean_shape(), imgs[RADIOGRAPH - 1])
+    initial_fit = init.get_initial_fit()
 
-    #img = cv2.fastNlMeansDenoising(imgs[0], 10, 10, 7, 21)
-    # equalize the histogram of the input image
-    #histeq = cv2.equalizeHist(img)
-    #plot.image(histeq)
-    #cv2.setMouseCallback("img", set_point(img))
-    #cv2.waitKey(0)
+    # Fit the model to the image
+    fit = Fit(initial_fit, test_img)
 
-
-def find(incisor, radiograph):
-    """
-    find finds an incisor in a given radiograph
-    """
-    pass
+    # Evaluation of the results
+    # TODO
 
 if __name__ == "__main__":
     main()

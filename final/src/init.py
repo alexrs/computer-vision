@@ -1,20 +1,19 @@
 """
 Authors: Alejandro Rodriguez, Fernando Collado
 
-See: 
+See:
     http://www.pyimagesearch.com/2015/03/09/capturing-mouse-click-events-with-python-and-opencv/
     http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_gui/py_mouse_handling/py_mouse_handling.html
+    https://media.readthedocs.org/pdf/opencv-python-tutroals/latest/opencv-python-tutroals.pdf
 
 """
-
-import cv2.cv as cv
 import cv2
+import cv2.cv as cv
 import numpy as np
 from shape import Shape
 
 IMG_WIDTH = 1200
 IMG_HEIGHT = 800
-
 
 class Init(object):
     """
@@ -32,12 +31,29 @@ class Init(object):
         self.tmpTooth = []
         self.dragging = False
         self.start_point = (0, 0)
-        self.init(shape, img)
+        self._initial_fit = None
+        if auto:
+            self._init_auto(shape, img)
+        else:
+            self._init_manual(shape, img)
 
-
-    def init(self, shape, img):
+    def get_initial_fit(self):
         """
+        returns the initial fit for the picture
+        """
+        return self._initial_fit
 
+    def _init_auto(self, shape, img):
+        """
+        TODO
+        determines the initial fit automatically
+        """
+        pass
+
+
+    def _init_manual(self, shape, img):
+        """
+        determines the initial fit manually, dragging the shape
         """
 
         orig_h = img.shape[0]
@@ -61,11 +77,12 @@ class Init(object):
         cv2.destroyAllWindows()
 
         centroid = np.mean(self.tooth, axis=0)
-        return Shape(np.array([[point[0]*orig_h, point[1]*orig_h] for point in self.tooth]))
+        self._initial_fit = Shape(np.array([[point[0]*orig_h, point[1]*orig_h] for point in self.tooth]))
 
 
     def _drag(self, ev, x, y, flags, img):
         """
+        allows user to drag a shape
         """
         if ev == cv.CV_EVENT_LBUTTONDOWN:
             self.dragging = True
@@ -83,7 +100,6 @@ class Init(object):
 
         https://enumap.wordpress.com/2014/07/06/python-opencv-resize-image-by-width/
         """
-        #find minimum scale to fit image on screen
         h, w = img.shape
         scale = min(float(new_w) / w, float(new_h) / h)
         return cv2.resize(img, (int(w * scale), int(h * scale))), scale
@@ -91,6 +107,7 @@ class Init(object):
 
     def _move(self, x, y, img):
         """
+        move the shape over the image
         """
         height = img.shape[0]
         tmp = np.array(img)

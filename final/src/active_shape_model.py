@@ -16,7 +16,7 @@ class ActiveShapeModel(object):
         # get the aligned shapes
         self._aligned_shapes = self._procrustes.get_aligned_shapes()
         # perform PCA on the aligned shapes
-        self._pca = PCA(Shape.matrix(self._aligned_shapes)) 
+        self._pca = PCA(Shape.matrix(self._aligned_shapes))
 
     def pca(self):
         """

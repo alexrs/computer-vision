@@ -20,6 +20,27 @@ class Enhancement(object):
     Enhacement algorithms to improve the radiographs
     """
 
+    def enhance(self, img):
+        """
+        Returns the enhaced image
+        """
+        # 1. Denoise the image
+        img = Enhancement.fastNlMeansDenoising(img)
+        # 2. Apply top hat.
+        top_hat_img = Enhancement.top_hat(img)
+        # 3. Apply black hat
+        black_hat_img = Enhancement.black_hat(img)
+        # 4. Add the returned top hat image to the original image
+        img = img + top_hat_img
+        # 5.  Substract the black hat image to the original image
+        img = img - black_hat_img
+        # 6. Apply CLAHE to enhance the contrast
+        # (https://en.wikipedia.org/wiki/Adaptive_histogram_equalization)
+        img = Enhancement.clahe(img)
+        # 7. Apply sobel to detect the edges (https://en.wikipedia.org/wiki/Sobel_operator)
+        img = Enhancement.sobel(img)
+        return img
+
     @staticmethod
     def fastNlMeansDenoising(img):
         """
@@ -60,6 +81,8 @@ class Enhancement(object):
         given the number of levels.
 
         See: http://docs.opencv.org/3.1.0/dc/dff/tutorial_py_pyramids.html
+
+        TODO: Think if we really need it? - Do the complete implementation if enough time
         """
         pyramid = []
         # Append the original image as first layer of the pyramid
@@ -74,26 +97,42 @@ class Enhancement(object):
 
     @staticmethod
     def closing(img):
+        """
+        Useful to remove small holes (dark regions).
+        """
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         return cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
 
     @staticmethod
     def opening(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        """
+        Useful for removing small objects
+        """
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
         return cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
 
     @staticmethod
     def top_hat(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
+        """
+        It is the difference between an input image and its opening
+        """
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
         return cv2.morphologyEx(img, cv2.MORPH_TOPHAT, kernel)
 
     @staticmethod
     def black_hat(img):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        """
+        It is the difference between the closing and its input image
+        """
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
         return cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
 
     @staticmethod
     def morfological_gradient(img):
+        """
+        It is the difference between the dilation and the erosion of an image
+        It is useful for finding the outline of an object
+        """
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         return cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
 
@@ -108,8 +147,8 @@ class Enhancement(object):
         img = cv2.GaussianBlur(img, (3, 3), 0)
         # convolute with proper kernels
         laplacian = cv2.Laplacian(img, cv2.CV_64F)
-        sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=5)  # x
-        sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=5)  # y
+        sobelx = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=3)  # x
+        sobely = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=3)  # y
 
         abs_x = cv2.convertScaleAbs(sobelx)
         abs_y = cv2.convertScaleAbs(sobely)

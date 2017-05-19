@@ -46,8 +46,7 @@ class Dataset(object):
         """
         original = self.load(incisor)
         mirror_map = {1: 4, 2: 3, 3: 2, 4: 1, 5: 8, 6: 7, 7: 6, 8: 5}
-        mirrored = [shape.mirror_y() for shape in self.load(mirror_map[incisor
-            ])]
+        mirrored = [shape.mirror_y() for shape in self.load(mirror_map[incisor])]
         return original + mirrored
 
     def get_landmarks(self, file_in):
@@ -63,6 +62,7 @@ class Dataset(object):
         """
         directory = self.path + "Radiographs/"
         filenames = fnmatch.filter(os.listdir(directory), '*.tif')
+        print filenames
         images = []
         for fname in filenames:
             img = cv2.imread(directory + "/" + fname, 0)

@@ -31,6 +31,8 @@ class Shape(object):
     def from_list_consecutive(cls, landmark):
         """
         Creates a Shape from a list of points in format [x1, x2, ..., y1, y2, ...]
+        This arrangement is used in the papers
+        "Modified Grey-level Models for Active Shape Model Training"
         """
         return Shape(np.array((landmark[:len(landmark)/2], landmark[len(landmark)/2:])).T)
 
@@ -99,7 +101,7 @@ class Shape(object):
         matrix = np.array([[np.cos(angle), np.sin(angle)],
                            [-np.sin(angle), np.cos(angle)]])
 
-        # apply rotation on each landmark point
+        # apply rotation
         points = np.zeros_like(self._data)
         centroid = self.mean()
         tmp_points = self._data - centroid
@@ -128,8 +130,6 @@ class Shape(object):
         """
         Return the data as a list [x1, y1, ..., xn, yn]
         """
-        #n, _ = self.shape()
-        #return np.reshape(self._data, 2*n)
         return np.hstack((self._data[:, 0], self._data[:, 1]))
 
     def data(self):
@@ -140,8 +140,8 @@ class Shape(object):
         return self._data
 
     def mirror_y(self):
-        """Mirrors this model around the y axis.
-
+        """
+        Mirrors this model around the y axis.
         """
         mean = self.mean()
         points = self._data - mean
