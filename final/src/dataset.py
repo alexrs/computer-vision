@@ -70,3 +70,17 @@ class Dataset(object):
             images.append(img)
 
         return np.array(images)
+
+    def is_enhanced(self):
+        """
+        return whether the enhanced images are stored or not
+        """
+        directory = self.path + "Radiographs/Enhanced/"
+        filenames = fnmatch.filter(os.listdir(directory), '*.tif')
+        return len(filenames) == 14
+
+    def get_enhanced(self):
+        """
+        return the enhanced images
+        """
+        return self.get_images("Enhanced/")

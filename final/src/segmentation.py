@@ -50,8 +50,14 @@ def main():
     asm = ActiveShapeModel(train_data)
 
     print "Enhancing images..."
-    # get the enhanced images (this will take a while)
-    enhanced_imgs = [Enhancement.enhance(img, i, save=True) for i, img in enumerate(imgs)]
+    # check if the enhanced images are stored 
+    if dataset.is_enhanced():
+        # if they are already stored, load from disk
+        enhanced_imgs = dataset.get_enhanced()
+    else:
+        # if not, get the enhanced images (this will take a while)
+        enhanced_imgs = [Enhancement.enhance(img, i, save=True) for i, img in enumerate(imgs)]
+
     test_enhanced_img = enhanced_imgs[RADIOGRAPH - 1]
     train_enhanced_imgs = [enhanced_imgs[i] for i in train_indices]
 
