@@ -19,8 +19,6 @@ import cv2
 INCISOR = 1  # The incisor we want to segmentate
 RADIOGRAPH = 1  # The radiograph we want to use
 NUM_LANDMARKS = 40 # Number of points in a file
-SEARCH_POINTS = 15 # Number of points to search when fitting the image
-
 
 def main():
     """
@@ -77,7 +75,7 @@ def main():
 
     # Fit the model to the image
     print "Fitting the model..."
-    fit = Fit(initial_fit, test_img, SEARCH_POINTS)
+    fit = Fit(initial_fit, test_img)
 
     # Evaluation of the results
     # TODO

@@ -87,10 +87,10 @@ class Procrustes(object):
         l2 = len(x2)/2
 
         # make sure both shapes are mean centered for computing scale and rotation
-        x1_centroid = np.array([np.mean(x1[:l1]), np.mean(x1[l1:])])
-        x2_centroid = np.array([np.mean(x2[:l2]), np.mean(x2[l2:])])
-        x1 = [x - x1_centroid[0] for x in x1[:l1]] + [y - x1_centroid[1] for y in x1[l1:]]
-        x2 = [x - x2_centroid[0] for x in x2[:l2]] + [y - x2_centroid[1] for y in x2[l2:]]
+        x1_mean = np.array([np.mean(x1[:l1]), np.mean(x1[l1:])])
+        x2_mean = np.array([np.mean(x2[:l2]), np.mean(x2[l2:])])
+        x1 = [x - x1_mean[0] for x in x1[:l1]] + [y - x1_mean[1] for y in x1[l1:]]
+        x2 = [x - x2_mean[0] for x in x2[:l2]] + [y - x2_mean[1] for y in x2[l2:]]
 
         # a = (x1.x2)/|x1|^2
         norm_x1_sq = (np.linalg.norm(x1)**2)
@@ -106,7 +106,7 @@ class Procrustes(object):
         theta = np.arctan(b/a)
 
         # the optimal translation is chosen to match their centroids
-        t = x2_centroid - x1_centroid
+        t = x2_mean - x1_mean
 
         return t, s, theta
 

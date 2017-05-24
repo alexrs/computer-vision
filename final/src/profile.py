@@ -19,8 +19,8 @@ class Profile(object):
         self._point = shape.data()[index]
         self._img = img
         self._enhanced_img = enhanced_img
-        self._norm = self._compute_normal(shape.data()[(index - 1) % 40], # take the mod to avoid overflow
-                                          shape.data()[(index + 1) % 40])
+        self._normal = self._compute_normal(shape.data()[(index - 1) % 40], # take the mod to avoid overflow
+                                            shape.data()[(index + 1) % 40])
         self._points, self._samples = self._sample()
 
     def _sample(self):
@@ -31,15 +31,13 @@ class Profile(object):
         intensity changes, we do not use the actual vector g but use the normalized
         derivative instead. (From [2])
         """
-        pos_values, pos_enhanced = self._get_intensity(-self._norm)
-        neg_values, neg_enhanced = self._get_intensity(self._norm)
-        pos_points = self._get_coordinates(self._norm).T
-        neg_points = self._get_coordinates(-self._norm).T
+        # sample k pixels on either side of the landmarks
+        pos_points, pos_values, pos_enhanced = self._get_intensity(-self._normal)
+        neg_points, neg_values, neg_enhanced = self._get_intensity(self._normal)
 
-        print neg_values, pos_values
+        points = np.vstack((neg_points[::-1], pos_points[1:]))
         values = np.append(neg_values[::-1], pos_values[1:])
         grads = np.append(neg_enhanced[::-1], pos_enhanced[1:])
-        points = np.vstack((neg_points[::-1], pos_points[1:]))
 
         # Finally, normalize
         factor = sum([math.fabs(v) for v in values])
@@ -76,17 +74,17 @@ class Profile(object):
         """
         np.newaxis - https://stackoverflow.com/a/29868617/1397152
         """
-
         p1 = self._point
         p2 = self._point + normal * WIDTH
         coordinates = np.array(p1[:, np.newaxis] * np.linspace(1, 0, WIDTH + 1) +
                                p2[:, np.newaxis] * np.linspace(0, 1, WIDTH + 1))
         return coordinates
 
-    def _get_intensity(self, coords):
+    def _get_intensity(self, normal):
         """
         cast to int - https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.ndarray.astype.html
         """
+        coords = self._get_coordinates(normal)
         values = self._img[coords[1].astype(np.int), coords[0].astype(np.int)]
         enhanced_values = self._enhanced_img[coords[1].astype(np.int), coords[0].astype(np.int)]
-        return values, enhanced_values
+        return coords.T, values, enhanced_values
