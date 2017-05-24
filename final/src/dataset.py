@@ -34,8 +34,8 @@ class Dataset(object):
         """
         directory = self.path + "Landmarks/original/"
         files = sorted(fnmatch.filter(os.listdir(directory), "*-{}.txt".format
-            (str(incisor))), key=lambda x: int(re.search('[0-9]+', x).group())
-            )
+                                      (str(incisor))), key=lambda x:
+                       int(re.search('[0-9]+', x).group()))
         shapes = []
         for filename in files:
             shapes.append(self.get_landmarks(directory + filename))

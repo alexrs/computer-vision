@@ -5,8 +5,8 @@ See:
     [2] http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=4462625
     [3] https://pdfs.semanticscholar.org/eb6a/f7f2c40d5f7f86e6acf140fc3040135fd43c.pdf
 """
-
 import numpy as np
+from profile import Profile
 
 class GreyLevelModel(object):
     """
@@ -18,14 +18,41 @@ class GreyLevelModel(object):
     uniform scaling of the gray levels. (From [3])
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, imgs, enhanced_imgs, shapes, index):
+        self._mean = None
+        self._cov = None
+        self._profiles = []
+        self._index = index
+        self._shapes = shapes
+        self._imgs = imgs
+        self._enhanced_imgs = enhanced_imgs
+        self._compute_grey_level_model()
 
-    def get_modes(self):
+    def _compute_grey_level_model(self):
         """
-        TODO
         """
-        pass
+        # For each image in the trainign set, get the profile for a given landmark
+        for i, img in enumerate(self._imgs):
+            profile = Profile(self._index, self._shapes[i], img, self._enhanced_imgs[i])
+            self._profiles.append(profile)
+
+        # For each profile, calculate mean and covariance matrix
+        mat = []
+        for profile in self._profiles:
+            mat.append(profile.get_samples())
+        mat = np.array(mat)
+        self._mean = np.mean(mat, axis=0)
+        self._cov = np.cov(mat.T)
+
+    def get_mean(self):
+        """
+        """
+        return self._mean
+    
+    def get_cov(self):
+        """
+        """
+        return self._cov
 
     def mahalanobis(self, samples):
         """
@@ -33,19 +60,5 @@ class GreyLevelModel(object):
         See:
             https://en.wikipedia.org/wiki/Mahalanobis_distance
         """
-        return (samples - self.mean_profile).T.dot(self.covariance).dot(samples - self.mean_profile)
+        return (samples - self._mean).T.dot(self._cov).dot(samples - self._mean)
 
-
-class Profile(object):
-
-    def __init__(self):
-        pass
-
-
-    def _normal(self, p1, p2):
-        """
-        returns the normal (-dy, dx)
-        See:
-            http://stackoverflow.com/a/1243676/1397152
-        """
-        return np.array([p1[1] - p2[1], p2[0] - p1[0]])
