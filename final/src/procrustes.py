@@ -65,7 +65,7 @@ class Procrustes(object):
         """
 
         # get params
-        _, s, theta = self.align_params(x1, x2)
+        _, s, theta = Procrustes.align_params(x1, x2)
 
         # align x1 with x2
         x1 = x1.rotate(theta)
@@ -75,8 +75,8 @@ class Procrustes(object):
         xx = np.dot(x1.collapse(), x2.collapse())
         return Shape.from_list_consecutive(x1.collapse()*(1.0/xx))
 
-
-    def align_params(self, x1, x2):
+    @staticmethod
+    def align_params(x1, x2):
         """
         """
         # work in vector format
@@ -100,15 +100,15 @@ class Procrustes(object):
         b = (np.dot(x1[:l1], x2[l2:]) - np.dot(x1[l1:], x2[:l2])) / norm_x1_sq
 
         # s^2 = a^2 + b^2
-        s = np.sqrt(a**2 + b**2)
+        scale = np.sqrt(a**2 + b**2)
 
         # theta = arctan(b/a)
         theta = np.arctan(b/a)
 
         # the optimal translation is chosen to match their centroids
-        t = x2_mean - x1_mean
+        translation = x2_mean - x1_mean
 
-        return t, s, theta
+        return translation, scale, theta
 
     def get_mean_shape(self):
         """

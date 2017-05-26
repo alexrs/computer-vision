@@ -11,12 +11,11 @@ from plot import Plot
 from active_shape_model import ActiveShapeModel
 from enhacement import Enhancement
 from init import Init
-from fit import Fit
+from fitter import Fitter
 from grey_level_model import GreyLevelModel
-
 import cv2
 
-INCISOR = 1  # The incisor we want to segmentate
+INCISOR = 3  # The incisor we want to segmentate
 RADIOGRAPH = 1  # The radiograph we want to use
 NUM_LANDMARKS = 40 # Number of points in a file
 
@@ -34,11 +33,11 @@ def main():
     dataset = Dataset()
 
     # Load landmarks
-    landmarks = dataset.load_mirrored(INCISOR)
+    shapes = dataset.load_mirrored(INCISOR)
 
     # Divide between test data and train data
-    test_data = landmarks[RADIOGRAPH - 1]
-    train_data = [landmarks[i] for i in train_indices]
+    test_data = shapes[RADIOGRAPH - 1]
+    train_data = [shapes[i] for i in train_indices]
 
     # Get images
     imgs = dataset.get_images()
@@ -50,6 +49,7 @@ def main():
     print "Creating Active Shape Model..."
     # Create the Active Shape Model
     asm = ActiveShapeModel(train_data)
+    #Plot.active_shape_model(asm)
 
     print "Enhancing images..."
     # check if the enhanced images are stored
@@ -75,10 +75,14 @@ def main():
 
     # Fit the model to the image
     print "Fitting the model..."
-    fit = Fit(initial_fit, test_img)
+    fitter = Fitter(initial_fit, test_img, test_enhanced_img,
+                    gl_models, asm.pca().pc_modes(), test_data)
+    X = fitter.fit()
+
 
     # Evaluation of the results
     # TODO
+    Plot.approximated_shape([test_data, X], test_img, wait=True)
 
 if __name__ == "__main__":
     main()

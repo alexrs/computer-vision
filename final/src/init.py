@@ -11,6 +11,7 @@ import cv2
 import cv2.cv as cv
 import numpy as np
 from shape import Shape
+from utils import Utils
 
 IMG_WIDTH = 1200
 IMG_HEIGHT = 800
@@ -30,7 +31,7 @@ class Init(object):
         self.tooth = []
         self.tmpTooth = []
         self.dragging = False
-        self.start_point = (0, 0)
+        self.start_point = (img.shape[0]/2, img.shape[1]/2)
         self._initial_fit = None
         if auto:
             self._init_auto(shape, img)
@@ -56,23 +57,24 @@ class Init(object):
         determines the initial fit manually, dragging the shape
         """
 
+        # reshape image to fit in the screen
         orig_h = img.shape[0]
-        img, scale = self.resize(img, IMG_WIDTH, IMG_HEIGHT)
+        img, scale = Utils.resize(img, IMG_WIDTH, IMG_HEIGHT)
         new_h = img.shape[0]
-        canvasing = np.array(img)
+        tmp = np.array(img)
 
-        # transform model points to image coord
+        # model points to image coordinates
         points = shape.data()
         min_x = abs(points[:, 0].min())
         min_y = abs(points[:, 1].min())
         points = [((point[0]+min_x)*scale, (point[1]+min_y)*scale) for point in points]
         self.tooth = points
         pimg = np.array([(int(p[0]*new_h), int(p[1]*new_h)) for p in points])
-        cv2.polylines(img, [pimg], True, (0, 255, 0))
+        cv2.polylines(img, [pimg], True, (125, 255, 0), 2)
 
 
         cv2.imshow('img', img)
-        cv.SetMouseCallback('img', self._drag, canvasing)
+        cv.SetMouseCallback('img', self._drag, tmp)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -94,16 +96,6 @@ class Init(object):
             if self.dragging and self.tooth != []:
                 self._move(x, y, img)
 
-    def resize(self, img, new_w, new_h):
-        """
-        Resize the image and return the new image, and the scale factor
-
-        https://enumap.wordpress.com/2014/07/06/python-opencv-resize-image-by-width/
-        """
-        h, w = img.shape
-        scale = min(float(new_w) / w, float(new_h) / h)
-        return cv2.resize(img, (int(w * scale), int(h * scale))), scale
-
 
     def _move(self, x, y, img):
         """
@@ -118,7 +110,7 @@ class Init(object):
         self.tmpTooth = points
 
         pimg = np.array([(int(p[0]*height), int(p[1]*height)) for p in points])
-        cv2.polylines(tmp, [pimg], True, (0, 255, 0))
+        cv2.polylines(tmp, [pimg], True, (125, 255, 0), 2)
         cv2.imshow('img', tmp)
 
     

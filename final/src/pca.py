@@ -41,7 +41,7 @@ class PCA:
 
         self._pc_modes = np.array(matrix).T
 
-    def get_pc_modes(self):
+    def pc_modes(self):
         """
         returns the modes of variation
         """

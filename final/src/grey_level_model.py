@@ -32,25 +32,27 @@ class GreyLevelModel(object):
         """
         """
         # For each image in the trainign set, get the profile for a given landmark
-        for i, img in enumerate(self._imgs):
-            profile = Profile(self._index, self._shapes[i], img, self._enhanced_imgs[i])
+        for shape, img, enhanced_img in zip(self._shapes, self._imgs, self._enhanced_imgs):
+            profile = Profile(self._index, shape, img, enhanced_img)
             self._profiles.append(profile)
 
         # For each profile, calculate mean and covariance matrix
         mat = []
         for profile in self._profiles:
-            mat.append(profile.get_samples())
+            mat.append(profile.samples())
         mat = np.array(mat)
         self._mean = np.mean(mat, axis=0)
         self._cov = np.cov(mat.T)
 
     def get_mean(self):
         """
+        return mean
         """
         return self._mean
-    
+
     def get_cov(self):
         """
+        return covariance matrix
         """
         return self._cov
 
