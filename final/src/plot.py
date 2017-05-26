@@ -1,5 +1,6 @@
 """
 Authors: Alejandro Rodriguez, Fernando Collado
+http://docs.opencv.org/3.0-beta/modules/imgproc/doc/drawing_functions.html
 """
 import matplotlib.pyplot as plt
 import numpy as np
@@ -38,38 +39,6 @@ class Plot(object):
             plt.show()
 
     @staticmethod
-    def shape(X):
-        """
-        plot a shape
-        """
-        x = []
-        y = []
-        for i, elem in enumerate(X):
-            if i % 2 == 0:
-                x.append(elem)
-            else:
-                y.append(elem)
-
-        plt.plot(x, y, '.')
-        plt.show()
-
-    @staticmethod
-    def landmarks(X):
-        """
-        """
-        x = []
-        y = []
-        for i, Y in enumerate(X):
-            for j, elem in enumerate(Y):
-                if j % 2 == 0:
-                    x.append(elem)
-                else:
-                    y.append(elem)
-
-        plt.plot(x, y, '-')
-        plt.show()
-
-    @staticmethod
     def image(img):
         """
         show an image
@@ -80,11 +49,12 @@ class Plot(object):
     @staticmethod
     def active_shape_model(active_shape_model):
         """
+        plot Active Shape Models with +-3 std
         """
         mean_shape = active_shape_model.mean_shape().collapse()
         pc_modes = active_shape_model.pca().pc_modes()
 
-        for i in range(4):
+        for i in range(4): # iterate over the pca dimensions
             shapes = [Shape.from_list_consecutive(mean_shape-3*pc_modes[:, i]),
                       Shape.from_list_consecutive(mean_shape-2*pc_modes[:, i]),
                       Shape.from_list_consecutive(mean_shape-1*pc_modes[:, i]),
@@ -109,15 +79,15 @@ class Plot(object):
         min_x = int(min([shape.data()[:, 0].min() for shape in shapes]))
         min_y = int(min([shape.data()[:, 1].min() for shape in shapes]))
 
-        img = np.ones((max_y-min_y+20, max_x-min_x+20, 3), np.uint8)*255
-        for shape_num, shape in enumerate(shapes):
+        img = np.ones((max_y-min_y+20, max_x-min_x+20, 3), np.uint8)*255 # white image
+        for i, shape in enumerate(shapes):
             points = shape.data().astype(int)
-            for i in range(len(points)):
-                cv2.line(img, (points[i, 0]-min_x + margin, points[i, 1]-min_y + margin),
-                        (points[(i + 1) % 40, 0]-min_x + margin, points[(i + 1) % 40, 1]-min_y + margin),
-                        colors[shape_num], thickness=1, lineType=cv2.CV_AA)
+            for j in range(len(points)):
+                cv2.line(img, (points[j, 0] - min_x + margin, points[j, 1] - min_y + margin),
+                        (points[(j + 1) % 40, 0]-min_x + margin, points[(j + 1) % 40, 1]-min_y + margin),
+                        colors[i], thickness=1, lineType=cv2.CV_AA)
 
-        cv2.imshow("", img)
+        cv2.imshow("img", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
