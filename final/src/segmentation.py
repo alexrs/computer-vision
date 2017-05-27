@@ -65,8 +65,8 @@ def main():
     print "Creating Grey Level Models..."
     gl_models = []
     for i in range(NUM_LANDMARKS):
-        glm = GreyLevelModel(train_imgs, enhanced_imgs, train_data, i)
-        gl_models.append(glm)
+        grey_mode = GreyLevelModel(train_imgs, enhanced_imgs, train_data, i)
+        gl_models.append(grey_mode)
 
     # Get the initial position
     print "Computing initial fit"
