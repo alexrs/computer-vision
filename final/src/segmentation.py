@@ -49,7 +49,7 @@ def main():
     print "Creating Active Shape Model..."
     # Create the Active Shape Model
     asm = ActiveShapeModel(train_data)
-    Plot.active_shape_model(asm)
+    #Plot.active_shape_model(asm)
 
     print "Enhancing images..."
     # check if the enhanced images are stored

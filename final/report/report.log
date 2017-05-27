@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.18)  4 MAY 2017 15:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.18)  27 MAY 2017 19:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -659,22 +659,23 @@ ort.toc)
 \openout3 = `report.toc'.
 
 
-[1] [2] (./report.aux) ) 
+[1] (./sections/intro.tex) (./sections/preprocess.tex) [2] (./sections/bib.tex)
+(./report.aux) ) 
 Here is how much of TeX's memory you used:
- 4942 strings out of 493014
- 66766 string characters out of 6133351
- 142073 words of memory out of 5000000
- 8383 multiletter control sequences out of 15000+600000
- 11515 words of font info for 43 fonts, out of 8000000 for 9000
+ 4952 strings out of 493014
+ 66919 string characters out of 6133351
+ 144073 words of memory out of 5000000
+ 8384 multiletter control sequences out of 15000+600000
+ 11822 words of font info for 44 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  37i,6n,32p,271b,219s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2016/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmcsc10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmr12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmti12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmtt12.pfb>
-Output written on report.pdf (3 pages, 48177 bytes).
+</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmcsc10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmti12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmtt12.pfb>
+Output written on report.pdf (3 pages, 59393 bytes).
 PDF statistics:
  34 PDF objects out of 1000 (max. 8388607)
  23 compressed objects within 1 object stream

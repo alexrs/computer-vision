@@ -81,18 +81,16 @@ class Fitter(object):
         find the best points to move the current shape
         https://books.google.es/books?id=lYxDAAAAQBAJ&pg=PA247&lpg=PA247&dq=Sample+a+profile+M+pixels+either+side+of+the+current+point&source=bl&ots=y9wvHgS7id&sig=uBQ5tVbXvLu5fFLFOEGDSuN1zKk&hl=es&sa=X&ved=0ahUKEwiF6Jal_I3UAhWGhRoKHQVuDbUQ6AEIJDAA#v=onepage&q=Sample%20a%20profile%20M%20pixels%20either%20side%20of%20the%20current%20point&f=false
         """
-        fits = []
-        profiles = []
         best_points = []
         for i, _ in enumerate(current_fit.data()):
             # Sample a profile M pixels either side of the current point
             profile = Profile(i, current_fit, self._test_img, self._test_img_enhanced, M)
-            profiles.append(profile)
 
             # Test the quality of fit of the corresponding grey-level model
             # at each of the 2(m-k)+1 possible positions along the sample
             # and choose the one which gives the best match
-            fmin, best = np.inf, None
+            fmin = np.inf
+            best = None
             for j in range(K, K + 2 * (M - K) + 1):
                 subprofile = profile.samples()[j-K:j+K+1]
                 f = self._gl_models[i].mahalanobis(subprofile)
@@ -101,17 +99,9 @@ class Fitter(object):
                     best = j
 
             # Choose the one which gives the best match
-            best_points.append(best)
-            best_point = [p for p in profile.points().astype(int)[best]]
+            best_points.append(profile.points().astype(int)[best])
 
-        # delete extra points
-        best_points.extend(best_points)
-        for best, profile in zip(best_points, profiles):
-            best_point = [p for p in profile.points().astype(int)[best]]
-            fits.append(best_point)
-
-
-        return Shape(np.array(fits))
+        return Shape(np.array(best_points))
 
     def _update(self, x_model, Y, tol=1e-14):
         """
