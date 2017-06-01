@@ -37,11 +37,11 @@ class Fitter(object):
         prev_fit = Shape.from_list_consecutive(np.zeros_like(self._current_fit.data()))
 
         for i in range(MAX_ITER):
-            print "     Fitting image. Iteration: {}".format(i)
+            print "\tFitting image. Iteration: {}".format(i)
             #  Examine a region of the image around each point Xi to find the
             # best nearby match for the point
             Y = self._find(self._current_fit)
-            Plot.approximated_shape([self._current_fit, Y], self._test_img, wait=False)
+            Plot.approximated_shape([Y, self._current_fit], self._test_img, wait=False)
 
 
             # 2. Update the parameters
@@ -69,7 +69,7 @@ class Fitter(object):
         b = np.clip(b, -3, 3)
 
         # clip scale
-        scale = np.clip(scale, 0.9, 1.05)
+        scale = np.clip(scale, 0.8, 1.1)
 
         # clip rotation
         theta = np.clip(theta, -math.pi/6, math.pi/6)

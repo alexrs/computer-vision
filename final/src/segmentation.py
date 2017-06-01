@@ -15,7 +15,7 @@ from fitter import Fitter
 from grey_level_model import GreyLevelModel
 import cv2
 
-INCISOR = 3  # The incisor we want to segmentate
+INCISOR = 6  # The incisor we want to segmentate
 RADIOGRAPH = 1  # The radiograph we want to use
 NUM_LANDMARKS = 40 # Number of points in a file
 
@@ -49,7 +49,7 @@ def main():
     print "Creating Active Shape Model..."
     # Create the Active Shape Model
     asm = ActiveShapeModel(train_data)
-    #Plot.active_shape_model(asm)
+    Plot.active_shape_model(asm)
 
     print "Enhancing images..."
     # check if the enhanced images are stored
