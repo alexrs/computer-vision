@@ -34,24 +34,24 @@ class Procrustes(object):
         # translate each example so that its centre of gravity is at the origin.
         self._aligned_shapes = [shape.center() for shape in shapes]
 
-        # 2: choose one example as an initial estimate of the mean shape
+        # choose one example as an initial estimate of the mean shape
         # and scale so that it is normalized
         self._mean_shape = self._aligned_shapes[0].normalize()
         # iterate
         for i in range(max_iters):
-            # 4: align all shapes with current estimate of mean shape
+            # align all shapes with current estimate of mean shape
             for j, shape in enumerate(self._aligned_shapes):
                 self._aligned_shapes[j] = self.align(shape, self._mean_shape)
 
-            # 5: re-estimate the mean from aligned shapes
+            #  re-estimate the mean from aligned shapes
             new_mean_shape = self._new_mean_shape(self._aligned_shapes)
 
-            # 6: apply constraints on scale and orientation to the current estimate
+            # apply constraints on scale and orientation to the current estimate
             # of the mean by aligning it with x0 and scaling so that |x| = 1.
             new_mean_shape = self.align(new_mean_shape, self._mean_shape)
             new_mean_shape = new_mean_shape.normalize().center()
 
-            # 7: if converged, do not return to 4
+            # check if converged
             if ((self._mean_shape.collapse() - new_mean_shape.collapse()) < tol).all():
                 #print "Procrustes", i
                 #print self._mean_shape.data()
@@ -92,20 +92,15 @@ class Procrustes(object):
         x1 = [x - x1_mean[0] for x in x1[:l1]] + [y - x1_mean[1] for y in x1[l1:]]
         x2 = [x - x2_mean[0] for x in x2[:l2]] + [y - x2_mean[1] for y in x2[l2:]]
 
-        # a = (x1.x2)/|x1|^2
         norm_x1_sq = (np.linalg.norm(x1)**2)
         a = np.dot(x1, x2) / norm_x1_sq
 
-        # b = sum_1->l2(x1_i*y2_i - y1_i*x2_i)/|x1|^2
         b = (np.dot(x1[:l1], x2[l2:]) - np.dot(x1[l1:], x2[:l2])) / norm_x1_sq
 
-        # s^2 = a^2 + b^2
         scale = np.sqrt(a**2 + b**2)
 
-        # theta = arctan(b/a)
         theta = np.arctan(b/a)
 
-        # the optimal translation is chosen to match their centroids
         translation = x2_mean - x1_mean
 
         return translation, scale, theta

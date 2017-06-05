@@ -26,6 +26,7 @@ class Plot(object):
         tot = sum(eig_vals)
         var_exp = [(i / tot)*100 for i in sorted(eig_vals, reverse=True)]
         cum_var_exp = np.cumsum(var_exp)
+        print cum_var_exp
         with plt.style.context('seaborn-whitegrid'):
             plt.figure(figsize=(6, 4))
             plt.bar(range(80), var_exp, alpha=0.5, align='center',
