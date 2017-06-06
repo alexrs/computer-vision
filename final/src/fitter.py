@@ -92,7 +92,7 @@ class Fitter(object):
             fmin = np.inf
             best = None
             for j in range(K, K + 2 * (M - K) + 1):
-                subprofile = profile.samples()[j-K:j+K+1]
+                subprofile = profile.samples()[j-K:j+K]
                 f = self._gl_models[i].mahalanobis(subprofile)
                 if f < fmin:
                     fmin = f

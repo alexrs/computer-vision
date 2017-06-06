@@ -1,1 +1,32 @@
-\section{Improvements}
+\section{Future Improvements}
+
+\subsection{Multi-resolution Active Shape Model}
+To improve the efficiency and robustness of the detection, a
+multi-resolution model can be used.
+
+At the base of the pyramid it is the original image and
+the level is the lowest (level 0). The image in the higher
+level is formed by subsampling the former image then we obtain
+a lower resolution version of the image with half number of
+the pixels along each dimension. Subsequent levels are
+obtained by further subsampling.
+
+With this method, the initial fit of the model to approximate
+will vary faster in position and orientation, and this fit will be
+improved and refinated in each level of the pyramid.
+
+\subsection{Width of Search Profile}
+In the implemented algorithm, search profile is only
+along a single line when searching forthe suggested
+movements of landmarks. But this search technique could
+be affected by noise in the image. To avoid this problem,
+the search space could be expanded adding some width to it. 
+
+\subsection{Landmarks Grouping}
+As we have seen new allowed shapes should comply with
+the constraint that the range of $b$ must be in the inverval
+$-3\sqrt\lambda \leq b \leq 3\sqrt\lambda$, where $\lambda$ is the
+eigenvalue result of the principal component analysis. But some of
+the shape variation isnt decided by a single principal component, and
+unexpected shapes could still apear even with the range of $b$ limited.
+This problem can be avoided grouping ladmarks that tend to move together.

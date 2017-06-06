@@ -39,6 +39,8 @@ class Profile(object):
         values = np.append(neg_values[::-1], pos_values[1:])
         grey_values = np.append(neg_enhanced[::-1], pos_enhanced[1:])
 
+        grey_values = [grey_values[i] - grey_values[i - 1] for i in range(1, len(grey_values))]
+
         # Finally, normalize
         factor = sum([math.fabs(v) for v in values])
         samples = [g/factor for g in grey_values]
