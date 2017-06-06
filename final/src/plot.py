@@ -63,10 +63,10 @@ class Plot(object):
     def shapes(shapes):
         """
         """
-        margin = 15
+        margin = 10
 
         shapes = [shape.normalize().scale(1000) for shape in shapes]
-        colors = Plot._get_colors2(len(shapes))
+        colors = Plot._get_colors(len(shapes))
 
         max_x = int(max([shape.data()[:, 0].max() for shape in shapes]))
         max_y = int(max([shape.data()[:, 1].max() for shape in shapes]))
@@ -110,19 +110,6 @@ class Plot(object):
 
     @staticmethod
     def _get_colors(num_colors):
-        """
-            http://stackoverflow.com/a/9701141
-        """
-        colors = []
-        for i in np.arange(0., 360., 360. / num_colors):
-            hue = i/360.
-            lightness = (50 + np.random.rand() * 10)/100.
-            saturation = (90 + np.random.rand() * 10)/100.
-            colors.append(colorsys.hls_to_rgb(hue, lightness, saturation))
-        return [(int(r*255), int(g*255), int(b*255)) for (r, g, b) in colors]
-
-    @staticmethod
-    def _get_colors2(num_colors):
         """
         https://www.quora.com/How-do-I-generate-n-visually-distinct-RGB-colours-in-Python/answer/Reed-Oei?srid=olmQ
         """

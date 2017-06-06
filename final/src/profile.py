@@ -37,8 +37,10 @@ class Profile(object):
 
         points = np.vstack((neg_points[::-1], pos_points[1:]))
         values = np.append(neg_values[::-1], pos_values[1:])
-        grey_values = np.append(neg_enhanced[::-1], pos_enhanced[1:])
 
+        # 2k+1
+        grey_values = np.append(neg_enhanced[::-1], pos_enhanced[1:])
+        # derivatives, length 2k
         grey_values = [grey_values[i] - grey_values[i - 1] for i in range(1, len(grey_values))]
 
         # Finally, normalize
@@ -76,6 +78,7 @@ class Profile(object):
 
     def _get_coordinates(self, normal):
         """
+        See:
         np.newaxis - https://stackoverflow.com/a/29868617/1397152
         """
         point1 = self._point
@@ -87,6 +90,7 @@ class Profile(object):
 
     def _get_intensity(self, normal):
         """
+        See:
         cast to int -
              https://docs.scipy.org/doc/numpy-1.12.0/reference/generated/numpy.ndarray.astype.html
         """
