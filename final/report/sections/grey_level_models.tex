@@ -11,6 +11,16 @@ $np$ pixels, centered around the landmark point.
 To reduce the effect of global intensity changes, we do not use
 the actual vector $g$ but use the normalized derivative instead.
 
+The gray-level profile of the $j^{th}$ landmark in the $i^{th}$
+image is a vector of $2k+1$ element
+$${g_{ij} =  [g_{ij0}, g_{ij1}, \ldots, g_{ij(2k+1)}]}^T$$
+
+And its differential form is of $2k$ length
+
+$$ {dg_{ij} =  [g_{ij1} - g_{ij0}, g_{ij2} - g_{ij1}, \ldots, g_{ij(2k+1)}  - g_{ij 2k}]}^T$$
+
+Finally, the differential form is normalized.
+
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{img/grey-level}

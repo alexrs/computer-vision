@@ -1,1 +1,18 @@
 \section{Fit the model}
+
+The algorithm used can be found in the paper of Cootes et al.
+\textit{An introduction to Active Shape Models}.
+
+Starting with the initial estimate computed previously as $X_i$
+\begin{algorithm}
+  \begin{enumerate}
+  \item Examine a region of the image around each point $X_i$
+    to find the best nearby match for the point ${X_i}'$
+  \item Update the parameters ($X_t, Y_t, s, \theta, b$) to best
+    fit the new found points $X$.
+  \item Apply constraint to the parameters to ensure
+    plausible shapes.
+  \item Repeat until convergence.
+ \end{enumerate}
+\caption{Fitting algorithm}
+\end{algorithm}

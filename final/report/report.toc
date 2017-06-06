@@ -10,8 +10,8 @@
 \contentsline {subsection}{\numberline {5.1}Manual}{5}
 \contentsline {subsection}{\numberline {5.2}Automatic}{5}
 \contentsline {section}{\numberline {6}Fit the model}{5}
-\contentsline {section}{\numberline {7}Results}{5}
-\contentsline {section}{\numberline {8}Future Improvements}{5}
-\contentsline {subsection}{\numberline {8.1}Multi-resolution Active Shape Model}{5}
+\contentsline {section}{\numberline {7}Results}{6}
+\contentsline {section}{\numberline {8}Future Improvements}{6}
+\contentsline {subsection}{\numberline {8.1}Multi-resolution Active Shape Model}{6}
 \contentsline {subsection}{\numberline {8.2}Width of Search Profile}{6}
 \contentsline {subsection}{\numberline {8.3}Landmarks Grouping}{6}
