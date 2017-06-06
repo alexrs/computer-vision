@@ -1,5 +1,12 @@
 .projectlie
 .DS_Store
 final/.projectile
+
+
 *.pyc
 .vscode/
+
+
+*.toc
+*.aux
+*.log
