@@ -13,5 +13,5 @@
 \contentsline {section}{\numberline {7}Results}{5}
 \contentsline {section}{\numberline {8}Future Improvements}{5}
 \contentsline {subsection}{\numberline {8.1}Multi-resolution Active Shape Model}{5}
-\contentsline {subsection}{\numberline {8.2}Width of Search Profile}{5}
-\contentsline {subsection}{\numberline {8.3}Landmarks Grouping}{5}
+\contentsline {subsection}{\numberline {8.2}Width of Search Profile}{6}
+\contentsline {subsection}{\numberline {8.3}Landmarks Grouping}{6}

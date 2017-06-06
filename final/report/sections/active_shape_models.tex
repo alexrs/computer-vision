@@ -13,7 +13,11 @@ following the format ${[X_1, Y_1, \ldots, X_n, Y_n]}^T$. To increase
 the number of samples, the mirrored version of the landmarks is also
 loaded.
 
-\includegraphics[width=0.7\linewidth]{img/landmarks}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\linewidth]{img/landmarks}
+  \caption{Landmarks on a face}
+\end{figure}
 
 
 \subsection{Align the training set}
@@ -55,4 +59,8 @@ The first 8 components hold more than 98\% of variance. The
 dimension of the dataset is reduced from 80 to 8.
 
 % 8 dims - 98.6571035 variance
-\includegraphics[width=0.7\linewidth]{img/variance}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\linewidth]{img/variance}
+  \caption{Variance}
+\end{figure}
