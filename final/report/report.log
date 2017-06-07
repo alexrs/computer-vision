@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.18)  7 JUN 2017 17:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.18)  7 JUN 2017 18:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -773,8 +773,15 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 21.
-)
-(./sections/results.tex <img/manual.png, id=47, 702.625pt x 515.9275pt>
+
+Overfull \hbox (17.62482pt too wide) detected at line 56
+[][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) (./sections/results.tex <img/manual.png, id=47, 702.625pt x 515.9275pt>
 File: img/manual.png Graphic file (type png)
 
 <use img/manual.png>
@@ -786,8 +793,8 @@ File: img/manual_truth.png Graphic file (type png)
 <use img/manual_truth.png>
 Package pdftex.def Info: img/manual_truth.png used on input line 10.
 (pdftex.def)             Requested size: 230.18253pt x 169.02455pt.
-) (./sections/improvements.tex [7]) [8 <./img/manual.png> <./img/manual_truth.p
-ng>] (./sections/bib.tex) (./report.aux) )
+ [7]) (./sections/improvements.tex [8 <./img/manual.png> <./img/manual_truth.pn
+g>]) [9] (./sections/bib.tex) (./report.aux) )
 (\end occurred inside a group at level 1)
 
 ### simple group (level 1) entered at line 1061 ({)
@@ -795,7 +802,7 @@ ng>] (./sections/bib.tex) (./report.aux) )
 Here is how much of TeX's memory you used:
  5945 strings out of 493014
  83320 string characters out of 6133351
- 172423 words of memory out of 5000000
+ 174423 words of memory out of 5000000
  9336 multiletter control sequences out of 15000+600000
  12129 words of font info for 45 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -811,10 +818,10 @@ r8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy1
 pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.p
 fb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pf
 b>
-Output written on report.pdf (9 pages, 2660063 bytes).
+Output written on report.pdf (10 pages, 2662863 bytes).
 PDF statistics:
- 91 PDF objects out of 1000 (max. 8388607)
- 53 compressed objects within 1 object stream
+ 94 PDF objects out of 1000 (max. 8388607)
+ 55 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

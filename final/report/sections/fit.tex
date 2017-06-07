@@ -18,8 +18,19 @@ Starting with the initial estimate computed previously as $X_i$
 \end{algorithm}
 
 \begin{itemize}
-\item \textbf{Find the best nearby match} --- 
-\item \textbf{Update the parameters} --- 
+\item \textbf{Find the best nearby match} --- First, we sample a
+  profile $m$ pixels either side of the current point (with
+  $m > k$, being $k$ the number of pixels used to sample either side
+  of each landmark when building the Grey Shape Models). Then, we
+  test the quality of fit of the corresponding grey-level model
+  at each of the $2(m-k)+1$ possible positions along the sample
+  and choose the one which gives the best match.
+  The best match is calculated using the Mahalanobis distance.
+\item \textbf{Update the parameters} --- The parameters (\texttt{b},
+  translation, scale and rotation)
+  must be updated to generate a new estimation of the object, using
+  Algorithm 3, as explained in
+  \textit{An Introduction to Active Shape Models}.
 \item \textbf{Apply constraints} --- To ensure that the generated
   shapes are valid, some constraints must be applied to the different
   paramenters. The shape parameter \texttt{b} is allowed to vary at most
@@ -27,3 +38,19 @@ Starting with the initial estimate computed previously as $X_i$
   \texttt{0.8 - 1.2}, and rotation is allowed in the range $\pm\pi/6$
   with respect to the mean shape.
 \end{itemize}
+
+\begin{algorithm}[h]
+  \begin{enumerate}
+  \item Initialise the shape parameters, $b$, to zero (the mean shape).
+  \item Generate the model point positions using $x = \bar{x} + Pb$
+  \item Find the pose parameters ($X_t, Y_t, s, \theta, b$) which best
+    align the model points $x$ to the current found points $Y$.
+  \item Project $Y$ into the model co-ordinate frame by inverting
+    the transformation T.
+  \item Project $y$ into the tangent plane to $\bar{x}$ by scaling:
+    $y' = y/(y \times \bar{x})$
+  \item Update the model parameters to match to $y'$
+  \item If not converged, return to step \textbf{2}.
+ \end{enumerate}
+\caption{Fitting algorithm}
+\end{algorithm}
