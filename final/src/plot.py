@@ -55,7 +55,7 @@ class Plot(object):
         mean_shape = active_shape_model.mean_shape().collapse()
         pc_modes = active_shape_model.pca().pc_modes()
 
-        for i in range(4): # iterate over the pca dimensions
+        for i in range(8): # iterate over the pca dimensions
             shapes = [Shape.from_list_consecutive(mean_shape-j*pc_modes[:, i]) for j in range(-3, 4)]
             Plot.shapes(shapes)
 

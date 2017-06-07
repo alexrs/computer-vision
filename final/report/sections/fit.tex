@@ -4,7 +4,7 @@ The algorithm used can be found in the paper of Cootes et al.
 \textit{An introduction to Active Shape Models}.
 
 Starting with the initial estimate computed previously as $X_i$
-\begin{algorithm}
+\begin{algorithm}[h]
   \begin{enumerate}
   \item Examine a region of the image around each point $X_i$
     to find the best nearby match for the point ${X_i}'$
@@ -16,3 +16,14 @@ Starting with the initial estimate computed previously as $X_i$
  \end{enumerate}
 \caption{Fitting algorithm}
 \end{algorithm}
+
+\begin{itemize}
+\item \textbf{Find the best nearby match} --- 
+\item \textbf{Update the parameters} --- 
+\item \textbf{Apply constraints} --- To ensure that the generated
+  shapes are valid, some constraints must be applied to the different
+  paramenters. The shape parameter \texttt{b} is allowed to vary at most
+  three times the standard deviation. Scaling is also limited to the range
+  \texttt{0.8 - 1.2}, and rotation is allowed in the range $\pm\pi/6$
+  with respect to the mean shape.
+\end{itemize}

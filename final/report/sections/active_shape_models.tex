@@ -13,21 +13,27 @@ following the format ${[X_1, Y_1, \ldots, X_n, Y_n]}^T$. To increase
 the number of samples, the mirrored version of the landmarks is also
 loaded.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.7\linewidth]{img/landmarks}
   \caption{Landmarks on a face}
 \end{figure}
 
+Each landmark indicates points of importance in the image, this is,
+clear cornes of object boundaries, junctions between boundaries, etc.
+However, such points are not abundant. For this reason, equally spaced
+points between landmark points are also used.
+Is important to point that there should be a correlation between landmarks
+in different images.
 
 \subsection{Align the training set}
 % Procrustes Analysis
 Once the landmarks are loaded, the training set must be aligned in
 order to compare equivalent points from different shapes. This
 alignment is done by scaling, rotating and translating the training
-shapes using the following algorithm:
+shapes using Algorithm 1.
 
-\begin{algorithm}
+\begin{algorithm}[ht]
 Rotate, scale and translate each shape to align with the
 first shape in the set\;
  \While{process has not converged}{
@@ -38,9 +44,24 @@ first shape in the set\;
 }
 \caption{Procrustes Analysis}
 \end{algorithm}
+The process converges when the variation of the mean shape between two
+consecutive interations changes less than a given tolerance.
 
 % image of the shapes before and after procrustes  
+\begin{figure}[!htb] \centering
+  \begin{minipage}{0.49\textwidth}
+  \frame{\includegraphics[height=\linewidth]{img/training_shapes}}
+  \caption{Training shapes}
+\end{minipage}
+\begin{minipage}{0.49\textwidth} \centering
+  \frame{\includegraphics[height=\linewidth]{img/aligned_shapes}}
+  \caption{Aligned shapes}
+ \end{minipage}
+\end{figure}
 
+Once the shapes are aligned, the mean shape can be calculated.
+This mean shape will be used to calculate the initial fit of
+our segmentation.
 
 \subsection{Principal Component Analysis}
 The set of aligned shapes contains as much dimensions as landmarks
@@ -58,7 +79,7 @@ The first 8 components hold more than 98\% of variance. The
 dimension of the dataset is reduced from 80 to 8.
 
 % 8 dims - 98.6571035 variance
-\begin{figure}
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.7\linewidth]{img/variance}
   \caption{Variance}
