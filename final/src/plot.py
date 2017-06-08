@@ -86,7 +86,7 @@ class Plot(object):
         cv2.destroyAllWindows()
 
     @staticmethod
-    def approximated_shape(shapes, img, show=True, wait=True, title='Landmarks'):
+    def approximated_shape(shapes, img, show=True, wait=True):
         """
         """
         img = img.copy()
@@ -101,7 +101,7 @@ class Plot(object):
 
         if show:
             img, _ = Utils.resize(img, WIDTH, HEIGHT)
-            cv2.imshow(title, img)
+            cv2.imshow("", img)
             if wait:
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
