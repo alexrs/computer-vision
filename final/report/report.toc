@@ -2,16 +2,18 @@
 \contentsline {section}{\numberline {1}Introduction}{2}
 \contentsline {section}{\numberline {2}Active Shape Model}{2}
 \contentsline {subsection}{\numberline {2.1}Load data}{2}
-\contentsline {subsection}{\numberline {2.2}Align the training set}{2}
+\contentsline {subsection}{\numberline {2.2}Align the training set}{3}
 \contentsline {subsection}{\numberline {2.3}Principal Component Analysis}{3}
-\contentsline {section}{\numberline {3}Grey Level Models}{3}
-\contentsline {section}{\numberline {4}Preprocess images}{4}
-\contentsline {section}{\numberline {5}Initialization}{5}
-\contentsline {subsection}{\numberline {5.1}Manual}{5}
-\contentsline {subsection}{\numberline {5.2}Automatic}{5}
-\contentsline {section}{\numberline {6}Fit the model}{5}
-\contentsline {section}{\numberline {7}Results}{6}
-\contentsline {section}{\numberline {8}Future Improvements}{6}
-\contentsline {subsection}{\numberline {8.1}Multi-resolution Active Shape Model}{6}
-\contentsline {subsection}{\numberline {8.2}Width of Search Profile}{6}
-\contentsline {subsection}{\numberline {8.3}Landmarks Grouping}{6}
+\contentsline {section}{\numberline {3}Grey Level Models}{4}
+\contentsline {section}{\numberline {4}Preprocess images}{5}
+\contentsline {section}{\numberline {5}Initialization}{6}
+\contentsline {subsection}{\numberline {5.1}Manual}{6}
+\contentsline {subsection}{\numberline {5.2}Automatic}{6}
+\contentsline {section}{\numberline {6}Fit the model}{6}
+\contentsline {section}{\numberline {7}Results}{7}
+\contentsline {subsection}{\numberline {7.1}Manual initialization}{7}
+\contentsline {subsection}{\numberline {7.2}Automatic initialization}{8}
+\contentsline {section}{\numberline {8}Future Improvements}{8}
+\contentsline {subsection}{\numberline {8.1}Multi-resolution Active Shape Model}{8}
+\contentsline {subsection}{\numberline {8.2}Width of Search Profile}{8}
+\contentsline {subsection}{\numberline {8.3}Landmarks Grouping}{9}

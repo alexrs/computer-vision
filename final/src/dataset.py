@@ -71,6 +71,17 @@ class Dataset(object):
 
         return np.array(images)
 
+    def get_segmentation(self, radiograph, incisor):
+        """
+        """
+        radiograph = "%02d" % radiograph
+        directory = self.path + "Segmentations/"
+        filenames = fnmatch.filter(os.listdir(directory), '{}-{}.png'.format(radiograph, incisor))
+        if len(filenames) > 0:
+            return cv2.imread(directory + "/" + filenames[0], 0)
+
+        return None
+
     def is_enhanced(self):
         """
         return whether the enhanced images are stored or not

@@ -28,7 +28,7 @@ class PCA:
         cov = np.cov(self._data, rowvar=0)
         # calculate eigenvectors and eigenvalues of the covariance matrix
         self._evals, self._evecs = np.linalg.eigh(cov)
-        Plot.variance(self._evals)
+        #Plot.variance(self._evals)
         # sort eigenvalue in decreasing order
         idx = np.argsort(-self._evals)
         self._evecs = self._evecs[:, idx]

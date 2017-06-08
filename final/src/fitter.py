@@ -44,10 +44,8 @@ class Fitter(object):
             Plot.approximated_shape([Y, self._current_fit], self._test_img, wait=False)
 
 
-            # 2. Update the parameters
-            # 3. Apply constraints to the parameters
+            #  Update and apply constraints to the parameters
             b, translation, scale, theta = self._clip(*self._update(self._current_fit, Y))
-
 
             prev_fit = self._current_fit
             t = self._current_fit.collapse() + np.dot(self._pc_modes, b)
@@ -65,11 +63,11 @@ class Fitter(object):
         """
         clip the parameters to allowed values to avoid unallowable shapes
         """
-        # clip b to +-3 sqrt(eig)
+        # clip b to +-3 std
         b = np.clip(b, -3, 3)
 
         # clip scale
-        scale = np.clip(scale, 0.8, 1.1)
+        scale = np.clip(scale, 0.8, 1.2)
 
         # clip rotation
         theta = np.clip(theta, -math.pi/6, math.pi/6)

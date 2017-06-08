@@ -18,6 +18,19 @@ class Plot(object):
     """
     Whatever you want to plot, you can find it here
     """
+
+    @staticmethod
+    def perf(perf):
+        ind = np.arange(len(perf))
+        width = 0.35       # the width of the bars
+        plt.bar(ind, perf, width, color='g')
+        plt.axhline(np.mean(perf))
+        plt.xlabel('Incisor')
+        plt.ylabel('Accuracy')
+        plt.axis([0, 7, 0, 1])
+        plt.grid(True)
+        plt.show()
+
     @staticmethod
     def variance(eig_vals):
         """
@@ -55,7 +68,7 @@ class Plot(object):
         mean_shape = active_shape_model.mean_shape().collapse()
         pc_modes = active_shape_model.pca().pc_modes()
 
-        for i in range(4): # iterate over the pca dimensions
+        for i in range(8): # iterate over the pca dimensions
             shapes = [Shape.from_list_consecutive(mean_shape-j*pc_modes[:, i]) for j in range(-3, 4)]
             Plot.shapes(shapes)
 
@@ -86,7 +99,7 @@ class Plot(object):
         cv2.destroyAllWindows()
 
     @staticmethod
-    def approximated_shape(shapes, img, show=True, wait=True, title='Landmarks'):
+    def approximated_shape(shapes, img, show=True, wait=True):
         """
         """
         img = img.copy()
@@ -101,7 +114,7 @@ class Plot(object):
 
         if show:
             img, _ = Utils.resize(img, WIDTH, HEIGHT)
-            cv2.imshow(title, img)
+            cv2.imshow("", img)
             if wait:
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
