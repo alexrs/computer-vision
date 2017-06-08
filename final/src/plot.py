@@ -18,6 +18,19 @@ class Plot(object):
     """
     Whatever you want to plot, you can find it here
     """
+
+    @staticmethod
+    def perf(perf):
+        ind = np.arange(len(perf))
+        width = 0.35       # the width of the bars
+        plt.bar(ind, perf, width, color='g')
+        plt.axhline(np.mean(perf))
+        plt.xlabel('Incisor')
+        plt.ylabel('Accuracy')
+        plt.axis([0, 7, 0, 1])
+        plt.grid(True)
+        plt.show()
+
     @staticmethod
     def variance(eig_vals):
         """

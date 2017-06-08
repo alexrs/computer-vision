@@ -13,7 +13,7 @@ sample sets. The Jaccard coefficient measures similarity between
 finite sample sets, and is defined as the size of the intersection
 divided by the size of the union of the sample sets.
 
-$$ J(A,B) =  \frac{|A \cap B|}{|A \cup B|} = \frac{|A \cap B|}{|A| + |B| + |A \cap B|} $$
+$$ J(A,B) =  \frac{|A \cap B|}{|A \cup B|} = \frac{|A \cap B|}{|A| + |B| - |A \cap B|} $$
 
 The result will be a number between 0 (no overlap) and
 1 (perfect segmentation).
@@ -22,6 +22,8 @@ The result will be a number between 0 (no overlap) and
   \frame{\includegraphics[width=0.6\linewidth]{img/iou}}
   \caption{Index of Union}
 \end{figure}
+
+\subsection{Manual initialization}
 
 \begin{figure}[!htb] \centering
   \begin{minipage}{0.49\textwidth}
@@ -33,4 +35,19 @@ The result will be a number between 0 (no overlap) and
   \caption{Ground truth}
  \end{minipage}
 \end{figure}
+
+It can be seen that, in general, the crown of each tooth is
+approximated well, but the root is not. This is caused by how
+the fitting is done. As we use Grey Level Models, in the enhanced
+images the contour of the tooth is much more defined in the crown.
+
+ \begin{figure} \centering
+  \frame{\includegraphics[width=0.6\linewidth]{img/acc_manual}}
+  \caption{Accuracy of the segmentation}
+\end{figure}
+
+
+\subsection{Automatic initialization}
+% TODO
+
 

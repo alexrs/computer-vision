@@ -3,6 +3,7 @@ Authors: Alejandro Rodriguez, Fernando Collado
 """
 import os
 import cv2
+import numpy as np
 
 K = 10
 M = 15
@@ -30,4 +31,29 @@ class Utils(object):
         h, w = img.shape
         scale = min(float(new_w) / w, float(new_h) / h)
         return cv2.resize(img, (int(w * scale), int(h * scale))), scale
+
+    @staticmethod
+    def segmentate(test_img, X):
+        h, w = test_img.shape
+        img = np.zeros((h, w), np.int8)
+        mask = np.array([X.data()], dtype=np.int32)
+        cv2.fillPoly(img, [mask], 255)
+        mask_img = cv2.inRange(img, 1, 255)
+        segmented = cv2.bitwise_and(test_img, test_img, mask=mask_img)
+        return segmented
+
+    @staticmethod
+    def to_binary(img):
+        """
+
+        """
+        h, w = img.shape
+        for i in xrange(h):
+            for j in xrange(w):
+                if img[i][j] > 0:
+                    img[i][j] = 1 #Setting the skin tone to be White
+                else:
+                    img[i][j] = 0 #else setting it to zero.
+        return img
+
 

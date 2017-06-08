@@ -14,6 +14,8 @@ from init import Init
 from fitter import Fitter
 from grey_level_model import GreyLevelModel
 import cv2
+from utils import Utils
+import numpy as np
 
 INCISOR = 6  # The incisor we want to segmentate
 RADIOGRAPH = 1  # The radiograph we want to use
@@ -39,7 +41,8 @@ def main():
     train_imgs = [imgs[i] for i in train_indices]
 
     X = []
-    for incisor in range(1, 2):
+    perf = []
+    for incisor in range(1, 9):
         # Load landmarks
         shapes = dataset.load_mirrored(incisor)
 
@@ -79,12 +82,30 @@ def main():
         print "Fitting the model..."
         fitter = Fitter(initial_fit, test_img, test_enhanced_img,
                         gl_models, asm.pca().pc_modes(), test_data)
-        X.append(fitter.fit())
-
+        fit = fitter.fit()
+        X.append(fit)
+        perf.append(jaccard(test_img, fit, dataset, incisor))
 
     # Evaluation of the results
-    # TODO
     #Plot.approximated_shape(X, test_img, wait=True)
+    #Plot.perf(perf)
+
+
+def jaccard(test_img, X, dataset, indx):
+    segmented = Utils.segmentate(test_img, X)
+    segmented = Utils.to_binary(segmented)
+    incisor = dataset.get_segmentation(RADIOGRAPH, indx - 1)
+    incisor = Utils.to_binary(incisor)
+    overlap = segmented + incisor
+    area_overlap = np.sum(np.where(overlap == 2))
+    area_segmented = np.sum(np.where(segmented == 1))
+    area_incisor = np.sum(np.where(incisor == 1))
+    #cv2.imshow('overlap', overlap*127)
+    #cv2.waitKey(0)
+
+    jaccard = area_overlap / float(area_incisor + area_segmented - area_overlap)
+    #print area_overlap, area_incisor, area_segmented, jaccard
+    return jaccard
 
 if __name__ == "__main__":
     main()

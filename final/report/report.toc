@@ -11,6 +11,8 @@
 \contentsline {subsection}{\numberline {5.2}Automatic}{6}
 \contentsline {section}{\numberline {6}Fit the model}{6}
 \contentsline {section}{\numberline {7}Results}{7}
+\contentsline {subsection}{\numberline {7.1}Manual initialization}{7}
+\contentsline {subsection}{\numberline {7.2}Automatic initialization}{8}
 \contentsline {section}{\numberline {8}Future Improvements}{8}
 \contentsline {subsection}{\numberline {8.1}Multi-resolution Active Shape Model}{8}
 \contentsline {subsection}{\numberline {8.2}Width of Search Profile}{8}
