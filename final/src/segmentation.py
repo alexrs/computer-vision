@@ -20,7 +20,7 @@ import numpy as np
 INCISOR = 6  # The incisor we want to segmentate
 RADIOGRAPH = 1  # The radiograph we want to use
 NUM_LANDMARKS = 40 # Number of points in a file
-AUTO=False
+AUTO = True
 
 def main():
     """
@@ -76,10 +76,7 @@ def main():
 
         # Get the initial position
         print "Computing initial fit"
-        if AUTO:
-            init = Init(asm.mean_shape(), imgs[RADIOGRAPH - 1], incisor, True)
-        else:   
-            init = Init(asm.mean_shape(), imgs[RADIOGRAPH - 1], 0)
+        init = Init(asm.mean_shape(), imgs[RADIOGRAPH - 1], incisor, AUTO)
         initial_fit = init.get_initial_fit()
 
         # Fit the model to the image
