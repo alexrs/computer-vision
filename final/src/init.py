@@ -22,7 +22,7 @@ class Init(object):
     for the location of the incisor on the image
     """
 
-    def __init__(self, shape, img, auto=False):
+    def __init__(self, shape, img, incisive, auto=False):
         """
         Get the shape, the image and if the initialisation is automatic or not
         (By default, it is manual, as this method will be implemented first)
@@ -34,7 +34,7 @@ class Init(object):
         self.start_point = (img.shape[0]/2, img.shape[1]/2)
         self._initial_fit = None
         if auto:
-            self._init_auto(shape, img)
+            self._init_auto(shape, img, incisive)
         else:
             self._init_manual(shape, img)
 
@@ -44,12 +44,63 @@ class Init(object):
         """
         return self._initial_fit
 
-    def _init_auto(self, shape, img):
+    def _init_auto(self, shape, img, incisive):
         """
         TODO
         determines the initial fit automatically
         """
-        pass
+    
+        # Cascade path and filename
+        cascade_path = "../ProjectData/_Auto/cascade_files/"
+        cascade_file = "30_grey_teeth.xml"
+        teeth_cascade = cv2.CascadeClassifier(cascade_path+cascade_file)
+
+        # For efficiency's sake, explore a smaller chunk than the original image
+        # that is guaranteed to have the incisive teeth in it
+        img_t = img[600:1400, 1000:2000]
+
+        # With these params it works the best (img, scale factor, numNeigh)
+        teeth = teeth_cascade.detectMultiScale(img_t, 2.3, 150)
+        teeth_t = teeth
+        # Checking if there are rectangles within rectangles
+        if len(teeth)>1:
+            for i,(x,y,w,h) in enumerate(teeth):
+                for j,(x1,y1,w1,h1) in enumerate(teeth_t):
+                    if i!=j and x1<=x and y1<=y and \
+                        x1+w1<=x+w and y1+h1<=y+h:
+                        teeth_t[j] = [-1,-1,-1,-1]
+
+        # Obtain rectangles larger than 100x100
+        rects = []
+        for x,y,w,h in teeth:
+            if w>100 and h>100:
+                rects.append([x,y,w,h])
+                
+        # Correct previous img crop
+        shape_x_cen = 1000
+        shape_y_cen = 600
+        rectangle = rects[0]
+        if incisive<4:
+            # Equivalent to upper third of upper half
+            shape_y_cen += rectangle[1]+rectangle[3]/6
+        else:
+            # Equivalent to lower third of lower half
+            shape_y_cen += rectangle[1]+rectangle[3]/1.2
+        if incisive<3 or (incisive<7 and incisive>4):
+            shape_x_cen += rectangle[0]+rectangle[2]/6
+        else:
+            shape_x_cen += rectangle[0]+rectangle[2]/1.2
+ 
+        # If visualization is required
+        #cv2.rectangle(img, (rectangle[0]+1000, rectangle[1]+600),
+        #                (rectangle[0]+rectangle[2]+1000,rectangle[1]+rectangle[3]+600),
+        #                (255,0,0), 2)
+        
+         
+        points = shape.data()
+        self.tooth = points
+        centroid = np.mean(self.tooth, axis=0)
+        self._initial_fit = Shape(np.array([[point[0]*shape_x_cen, point[1]*shape_y_cen] for point in self.tooth]))
 
 
     def _init_manual(self, shape, img):
