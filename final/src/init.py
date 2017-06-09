@@ -95,12 +95,32 @@ class Init(object):
         #cv2.rectangle(img, (rectangle[0]+1000, rectangle[1]+600),
         #                (rectangle[0]+rectangle[2]+1000,rectangle[1]+rectangle[3]+600),
         #                (255,0,0), 2)
-        
-         
+
+        # reshape image to fit in the screen
+        orig_h = img.shape[0]
+        img, scale = Utils.resize(img, IMG_WIDTH, IMG_HEIGHT)
+        new_h = img.shape[0]
+        tmp = np.array(img)
+
+        # model points to image coordinates
         points = shape.data()
-        self.tooth = points
+        min_x = abs(points[:, 0].min())
+        min_y = abs(points[:, 1].min())
+        points = [((point[0]+min_x)*scale, (point[1]+min_y)*scale) for point in points]
+        pimg = np.array([(int(p[0]*new_h), int(p[1]*new_h)) for p in points])
+        pimg = np.array([(p[0]+shape_x_cen, p[1]+shape_y_cen) for p in pimg])
+        self.tooth = pimg
+        print pimg
+        
+        cv2.polylines(img, [pimg], True, (125, 255, 0), 2)
+
+
+        cv2.imshow('img', img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
         centroid = np.mean(self.tooth, axis=0)
-        self._initial_fit = Shape(np.array([[point[0]*shape_x_cen, point[1]*shape_y_cen] for point in self.tooth]))
+        self._initial_fit = Shape(np.array([[point[0], point[1]] for point in self.tooth]))
 
 
     def _init_manual(self, shape, img):
