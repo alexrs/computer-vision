@@ -20,7 +20,7 @@ import numpy as np
 INCISOR = 6  # The incisor we want to segmentate
 RADIOGRAPH = 1  # The radiograph we want to use
 NUM_LANDMARKS = 40 # Number of points in a file
-AUTO=False
+AUTO = True
 
 def main():
     """
