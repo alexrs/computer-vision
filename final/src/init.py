@@ -52,7 +52,7 @@ class Init(object):
         """
         # Cascade path and filename
         cascade_path = "../ProjectData/_Auto/cascade_files/"
-        cascade_file = "30_grey_teeth.xml"
+        cascade_file = "14_grey_teeth.xml"
         teeth_cascade = cv2.CascadeClassifier(cascade_path+cascade_file)
 
         # For efficiency's sake, explore a smaller chunk than the original image
@@ -64,18 +64,20 @@ class Init(object):
         # With these params it works the best (img, scale factor, numNeigh)
         teeth = teeth_cascade.detectMultiScale(img_t, 2.3, 150)
         teeth_t = teeth
+
         # Checking if there are rectangles within rectangles
         if len(teeth) > 1:
             for i, (x, y, w, h) in enumerate(teeth):
                 for j, (x1, y1, w1, h1) in enumerate(teeth_t):
-                    if i != j and x1 <= x and y1 <= y and \
-                        x1 + w1 <= x + w and y1 + h1 <= y + h:
+                    if i == j:
+                        continue
+                    if h1 < 300 or w1 < 300:
                         teeth_t[j] = [-1, -1, -1, -1]
 
         # Obtain rectangles larger than 100x100
         rects = []
         for x, y, w, h in teeth:
-            if w > 100 and h > 100:
+            if w > 200 and h > 200:
                 rects.append([x, y, w, h])
 
         # Correct previous img crop
@@ -104,9 +106,9 @@ class Init(object):
             x_cen += (incisor - 5) * width + width/2
 
         # If visualization is required
-        #cv2.rectangle(img, (x+1000, y+600),
-        #   (x+w+1000,y+height+600),
-        #   (255,0,0), 2)
+        cv2.rectangle(img, (x+1000, y+600),
+           (x+w+1000,y+height+600),
+           (255,0,0), 2)
 
         # reshape image to fit in the screen
         img, scale = Utils.resize(img, IMG_WIDTH, IMG_HEIGHT)
