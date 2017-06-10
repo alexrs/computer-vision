@@ -30,3 +30,23 @@ eigenvalue result of the principal component analysis. But some of
 the shape variation isnt decided by a single principal component, and
 unexpected shapes could still apear even with the range of $b$ limited.
 This problem can be avoided grouping ladmarks that tend to move together.
+
+\subsection{Automatic model}
+
+There are several factors that could improve the automatic model, some of them
+are:
+\begin{itemize}
+  \item If the current classifier is used, the position of the upper incisives
+could be slightly improved by taking into account the fact that the upper
+central right and left teeth are always bigger than the right and left laterals,
+and accordingly set an initial $x$ position for them
+  \item Again, given our current classifier, the position of the lower
+incisives, instead of making a division of 8 areas, a division of 6 areas could
+improve the results.
+  \item Lastly, instead of meddling with cumbersomes matters such as trying to
+calculate the position of upper and lower incisives, given that there is one big
+rectangle, it could be used another classifier, one for detecting upper
+incisives, another for lower incisives. That could increase detection accuracy,
+and boost shape placing.
+\end{itemize}
+
