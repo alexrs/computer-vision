@@ -19,12 +19,12 @@ What really would make a difference in object detection is to make it automatic,
 and not having to drag a shape, for each object to be detected, in each image.
 Our first approach to make an automatic model was using histogram of oriented
 gradients (HOG), combined with training a support vector machine (SVM), to
-detect the shape of the 8 incisives altogether. But we stumbled upon an
+detect the shape of the 8 incisors altogether. But we stumbled upon an
 obstacle. Whereas with other images (much more clear, less noise, with highly
 detailed edges) this method is feasible, with our images it was not as good,
 even after "cleaning" the image (such as denoising, white and
 black hat...) The following images represent an example with a normal image, 
-and one cropped section of incisives, from radiograph1.
+and one cropped section of incisors, from radiograph1.
 
 \begin{figure}[h]
   \centering
@@ -89,16 +89,16 @@ Once we have a proper automatic detection mechanism, all that remains is to plac
 the shape in its correct position. For this matter, a small choosing technique
 was developed:
 \begin{itemize}
-  \item If the incisive is one of the upper four, the $y$ position is located at
+  \item If the incisor is one of the upper four, the $y$ position is located at
 the first third of the rectangle. For the $x$ centroid, the width is divided in 4,
 and the centroid will be the center of one of them (corresponding to the
-incisive)
-  \item On the other hand, if the incisive is one of the lower four, the $y$
+incisor)
+  \item On the other hand, if the incisor is one of the lower four, the $y$
 centroid is located slightly below the second third of the height. The $x$
-position in this case is trickier. The lower incisives are usually smaller
+position in this case is trickier. The lower incisors are usually smaller
 (altogether) than the upper ones, so a different mechanism has to be made. For
 this matter, instead of dividing the width by 4, it was dividived by 8, and the
 first two, and the last two areas are not going to be selected. Meaning, the
-incisives will be placed at one of the middle 4 areas, out of the division of 8
+incisors will be placed at one of the middle 4 areas, out of the division of 8
 made.  
 \end{itemize}

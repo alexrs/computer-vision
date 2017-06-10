@@ -23,7 +23,7 @@ class Init(object):
     for the location of the incisor on the image
     """
 
-    def __init__(self, shape, img, incisive, auto=False):
+    def __init__(self, shape, img, incisor, auto=False):
         """
         Get the shape, the image and if the initialisation is automatic or not
         (By default, it is manual, as this method will be implemented first)
@@ -35,7 +35,7 @@ class Init(object):
         self.start_point = (0, 0)
         self._initial_fit = None
         if auto:
-            self._init_auto(shape, img, incisive)
+            self._init_auto(shape, img, incisor)
         else:
             self._init_manual(shape, img)
 
@@ -45,7 +45,7 @@ class Init(object):
         """
         return self._initial_fit
 
-    def _init_auto(self, shape, img, incisive):
+    def _init_auto(self, shape, img, incisor):
         """
         TODO
         determines the initial fit automatically
@@ -56,7 +56,7 @@ class Init(object):
         teeth_cascade = cv2.CascadeClassifier(cascade_path+cascade_file)
 
         # For efficiency's sake, explore a smaller chunk than the original image
-        # that is guaranteed to have the incisive teeth in it
+        # that is guaranteed to have the incisor teeth in it
         img_t = img[600:1400, 1000:2000]
 
         orig_h = img.shape[0]
@@ -86,22 +86,22 @@ class Init(object):
 
         # Due to the detection mechanism, the centroid of the tooth is located the
         # with the following logic
-        # If incisive is one of the upper 4, the rectangle is divided in 4
+        # If incisor is one of the upper 4, the rectangle is divided in 4
         # areas, and the tooth x position is located at the center of one of the
-        # 4 (corresponding to the incisive number)
-        # If the incisive is one of the lower 4, as they are usually smaller,
+        # 4 (corresponding to the incisor number)
+        # If the incisor is one of the lower 4, as they are usually smaller,
         # the areas are now 8, instead of 4, and the 2 first, and 2 last are
         # always "ignored", the tooth will always be located in one of the
-        # mdidle 4 areas (again, corresponding to the incisive number)
-        if incisive < 5:
+        # mdidle 4 areas (again, corresponding to the incisor number)
+        if incisor < 5:
             y_cen += y + height/6
-            x_cen += x + (incisive - 1) * width + width/2
+            x_cen += x + (incisor - 1) * width + width/2
         else:
             width = width/2
             y_cen += y + height/1.5
-            #x_cen += x + (incisive - 5) * width + width/2
+            #x_cen += x + (incisor - 5) * width + width/2
             x_cen += x + width * 2
-            x_cen += (incisive - 5) * width + width/2
+            x_cen += (incisor - 5) * width + width/2
 
         # If visualization is required
         #cv2.rectangle(img, (x+1000, y+600),
