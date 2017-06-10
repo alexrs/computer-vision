@@ -5,6 +5,7 @@ See:
     http://www.pyimagesearch.com/2015/03/09/capturing-mouse-click-events-with-python-and-opencv/
     http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_gui/py_mouse_handling/py_mouse_handling.html
     https://media.readthedocs.org/pdf/opencv-python-tutroals/latest/opencv-python-tutroals.pdf
+    http://docs.opencv.org/2.4.13.2/doc/user_guide/ug_traincascade.html
 
 """
 import cv2
@@ -80,8 +81,8 @@ class Init(object):
         # Correct previous img crop
         x_cen = 1000
         y_cen = 600
-        x, y, width, height = rects[0]
-        width = width/4
+        x, y, w, height = rects[0]
+        width = w/4
 
         # Due to the detection mechanism, the centroid of the tooth is located the
         # with the following logic
@@ -103,8 +104,8 @@ class Init(object):
             x_cen += (incisive - 5) * width + width/2
 
         # If visualization is required
-        #cv2.rectangle(img, (rectangle[0]+1000, rectangle[1]+600),
-        #   (rectangle[0]+rectangle[2]+1000,rectangle[1]+rectangle[3]+600),
+        #cv2.rectangle(img, (x+1000, y+600),
+        #   (x+w+1000,y+height+600),
         #   (255,0,0), 2)
 
         # reshape image to fit in the screen
