@@ -49,7 +49,6 @@ class Init(object):
         TODO
         determines the initial fit automatically
         """
-    
         # Cascade path and filename
         cascade_path = "../ProjectData/_Auto/cascade_files/"
         cascade_file = "30_grey_teeth.xml"
@@ -63,38 +62,36 @@ class Init(object):
         teeth = teeth_cascade.detectMultiScale(img_t, 2.3, 150)
         teeth_t = teeth
         # Checking if there are rectangles within rectangles
-        if len(teeth)>1:
-            for i,(x,y,w,h) in enumerate(teeth):
-                for j,(x1,y1,w1,h1) in enumerate(teeth_t):
-                    if i!=j and x1<=x and y1<=y and \
-                        x1+w1<=x+w and y1+h1<=y+h:
-                        teeth_t[j] = [-1,-1,-1,-1]
+        if len(teeth) > 1:
+            for i, (x, y, w, h) in enumerate(teeth):
+                for j, (x1, y1, w1, h1) in enumerate(teeth_t):
+                    if i != j and x1 <= x and y1 <= y and \
+                        x1+w1 <= x+w and y1+h1 <= y+h:
+                        teeth_t[j] = [-1, -1, -1, -1]
 
         # Obtain rectangles larger than 100x100
         rects = []
-        for x,y,w,h in teeth:
-            if w>100 and h>100:
-                rects.append([x,y,w,h])
-                
+        for x, y, w, h in teeth:
+            if w > 100 and h > 100:
+                rects.append([x, y, w, h])
+
         # Correct previous img crop
-        shape_x_cen = 1000
-        shape_y_cen = 600
-        rectangle = rects[0]
-        if incisive<4:
-            # Equivalent to upper third of upper half
-            shape_y_cen += rectangle[1]+rectangle[3]/6
+        x_cen = 1000
+        y_cen = 600
+        x, y, width, height = rects[0]
+        width = width/4
+
+        if incisive < 4:
+            y_cen += y + height/6
+            x_cen += x + (incisive-1) * width + width/2
         else:
-            # Equivalent to lower third of lower half
-            shape_y_cen += rectangle[1]+rectangle[3]/1.2
-        if incisive<3 or (incisive<7 and incisive>4):
-            shape_x_cen += rectangle[0]+rectangle[2]/6
-        else:
-            shape_x_cen += rectangle[0]+rectangle[2]/1.2
- 
+            y_cen += y + height/1.2
+            x_cen += x + (incisive-5) * width + width/2
+
         # If visualization is required
         #cv2.rectangle(img, (rectangle[0]+1000, rectangle[1]+600),
-        #                (rectangle[0]+rectangle[2]+1000,rectangle[1]+rectangle[3]+600),
-        #                (255,0,0), 2)
+        #   (rectangle[0]+rectangle[2]+1000,rectangle[1]+rectangle[3]+600),
+        #   (255,0,0), 2)
 
         # reshape image to fit in the screen
         orig_h = img.shape[0]
@@ -106,12 +103,14 @@ class Init(object):
         points = shape.data()
         min_x = abs(points[:, 0].min())
         min_y = abs(points[:, 1].min())
-        points = [((point[0]+min_x)*scale, (point[1]+min_y)*scale) for point in points]
-        pimg = np.array([(int(p[0]*new_h), int(p[1]*new_h)) for p in points])
-        pimg = np.array([(p[0]+shape_x_cen, p[1]+shape_y_cen) for p in pimg])
-        self.tooth = pimg
-        print pimg
-        
+        points = [((point[0]+min_x)*scale*new_h+x_cen*scale, 
+                    (point[1]+min_y)*scale*new_h+y_cen*scale) for point in points]
+
+
+        pimg = np.array([(int(p[0]), int(p[1])) for p in points])
+
+        self.tooth = points
+
         cv2.polylines(img, [pimg], True, (125, 255, 0), 2)
 
 
@@ -119,7 +118,6 @@ class Init(object):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-        centroid = np.mean(self.tooth, axis=0)
         self._initial_fit = Shape(np.array([[point[0], point[1]] for point in self.tooth]))
 
 
@@ -149,7 +147,6 @@ class Init(object):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-        centroid = np.mean(self.tooth, axis=0)
         self._initial_fit = Shape(np.array([[point[0]*orig_h, point[1]*orig_h] for point in self.tooth]))
 
 
@@ -183,5 +180,3 @@ class Init(object):
         pimg = np.array([(int(p[0]*height), int(p[1]*height)) for p in points])
         cv2.polylines(tmp, [pimg], True, (125, 255, 0), 2)
         cv2.imshow('img', tmp)
-
-    
