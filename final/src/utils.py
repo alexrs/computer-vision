@@ -34,6 +34,8 @@ class Utils(object):
 
     @staticmethod
     def segmentate(test_img, X):
+        """
+        """
         h, w = test_img.shape
         img = np.zeros((h, w), np.int8)
         mask = np.array([X.data()], dtype=np.int32)
@@ -45,7 +47,6 @@ class Utils(object):
     @staticmethod
     def to_binary(img):
         """
-
         """
         h, w = img.shape
         for i in xrange(h):

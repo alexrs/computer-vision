@@ -23,14 +23,8 @@ class Dataset(object):
         self.path = path
 
     def load(self, incisor):
-        """Collects all example landmark models for the incisor with the given number.
-
-        Args:
-            incisor_nr : identifier of tooth
-
-        Returns:
-            A list containing all landmark models.
-
+        """
+        load the landmarks of a given incisor
         """
         directory = self.path + "Landmarks/original/"
         files = sorted(fnmatch.filter(os.listdir(directory), "*-{}.txt".format
@@ -43,7 +37,7 @@ class Dataset(object):
 
     def load_mirrored(self, incisor):
         """
-        load the images mirrored in the y axis
+        load the landmarks mirrored in the y axis
         """
         original = self.load(incisor)
         mirror_map = {1: 4, 2: 3, 3: 2, 4: 1, 5: 8, 6: 7, 7: 6, 8: 5}

@@ -61,33 +61,6 @@ class Plot(object):
         plt.show()
 
     @staticmethod
-    def shapes(shapes):
-        """
-        """
-        margin = 10
-
-        shapes = [shape.normalize().scale(1000) for shape in shapes]
-        colors = Plot._get_colors(len(shapes))
-
-        max_x = int(max([shape.data()[:, 0].max() for shape in shapes]))
-        print max_x, [shape.data()[:, 0].max()]
-        max_y = int(max([shape.data()[:, 1].max() for shape in shapes]))
-        min_x = int(min([shape.data()[:, 0].min() for shape in shapes]))
-        min_y = int(min([shape.data()[:, 1].min() for shape in shapes]))
-
-        img = np.ones((max_y-min_y+20, max_x-min_x+20, 3), np.uint8)*255 # white image
-        for i, shape in enumerate(shapes):
-            points = shape.data().astype(int)
-            for j in range(len(points)):
-                cv2.line(img, (points[j, 0] - min_x + margin, points[j, 1] - min_y + margin),
-                         (points[(j + 1) % 40, 0]-min_x + margin, points[(j + 1) % 40, 1]-min_y + margin),
-                        colors[i], thickness=1, lineType=cv2.CV_AA)
-
-        cv2.imshow("img", img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-    @staticmethod
     def approximated_shape(shapes, img, show=True, wait=True):
         """
         """
