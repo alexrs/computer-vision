@@ -17,10 +17,9 @@ import cv2
 from utils import Utils
 import numpy as np
 
-INCISOR = 6  # The incisor we want to segmentate
-RADIOGRAPH = 1  # The radiograph we want to use
+RADIOGRAPH = 4  # The radiograph we want to use
 NUM_LANDMARKS = 40 # Number of points in a file
-AUTO = True
+AUTO = False
 
 def main():
     """
@@ -43,12 +42,14 @@ def main():
 
     X = []
     perf = []
+    test = []
     for incisor in range(1, 9):
         # Load landmarks
         shapes = dataset.load_mirrored(incisor)
 
         # Divide between test data and train data
         test_data = shapes[RADIOGRAPH - 1]
+        test.append(test_data)
         train_data = [shapes[i] for i in train_indices]
 
         print "Creating Active Shape Model..."
@@ -88,7 +89,7 @@ def main():
         perf.append(jaccard(test_img, fit, dataset, incisor))
 
     # Evaluation of the results
-    Plot.approximated_shape(X, test_img, wait=True)
+    Plot.approximated_shape(test, test_img, wait=True)
     Plot.perf(perf)
 
 

@@ -61,18 +61,6 @@ class Plot(object):
         plt.show()
 
     @staticmethod
-    def active_shape_model(active_shape_model):
-        """
-        plot Active Shape Models with +-3 std
-        """
-        mean_shape = active_shape_model.mean_shape().collapse()
-        pc_modes = active_shape_model.pca().pc_modes()
-
-        for i in range(8): # iterate over the pca dimensions
-            shapes = [Shape.from_list_consecutive(mean_shape-j*pc_modes[:, i]) for j in range(-3, 4)]
-            Plot.shapes(shapes)
-
-    @staticmethod
     def shapes(shapes):
         """
         """
@@ -82,6 +70,7 @@ class Plot(object):
         colors = Plot._get_colors(len(shapes))
 
         max_x = int(max([shape.data()[:, 0].max() for shape in shapes]))
+        print max_x, [shape.data()[:, 0].max()]
         max_y = int(max([shape.data()[:, 1].max() for shape in shapes]))
         min_x = int(min([shape.data()[:, 0].min() for shape in shapes]))
         min_y = int(min([shape.data()[:, 1].min() for shape in shapes]))
@@ -91,7 +80,7 @@ class Plot(object):
             points = shape.data().astype(int)
             for j in range(len(points)):
                 cv2.line(img, (points[j, 0] - min_x + margin, points[j, 1] - min_y + margin),
-                        (points[(j + 1) % 40, 0]-min_x + margin, points[(j + 1) % 40, 1]-min_y + margin),
+                         (points[(j + 1) % 40, 0]-min_x + margin, points[(j + 1) % 40, 1]-min_y + margin),
                         colors[i], thickness=1, lineType=cv2.CV_AA)
 
         cv2.imshow("img", img)

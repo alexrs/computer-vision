@@ -104,9 +104,9 @@ class Init(object):
             x_cen += (incisor - 5) * width + width/2
 
         # If visualization is required
-        #cv2.rectangle(img, (x+1000, y+600),
-        #   (x+w+1000,y+height+600),
-        #   (255,0,0), 2)
+        cv2.rectangle(img, (x+1000, y+600),
+           (x+w+1000,y+height+600),
+           (255,0,0), 2)
 
         # reshape image to fit in the screen
         img, scale = Utils.resize(img, IMG_WIDTH, IMG_HEIGHT)
