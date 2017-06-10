@@ -89,7 +89,7 @@ def main():
 
     # Evaluation of the results
     #Plot.approximated_shape(X, test_img, wait=True)
-    #Plot.perf(perf)
+    Plot.perf(perf)
 
 
 def jaccard(test_img, X, dataset, indx):

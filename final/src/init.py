@@ -31,7 +31,7 @@ class Init(object):
         self.tooth = []
         self.tmpTooth = []
         self.dragging = False
-        self.start_point = (img.shape[0]/2, img.shape[1]/2)
+        self.start_point = (0, 0)
         self._initial_fit = None
         if auto:
             self._init_auto(shape, img, incisive)
@@ -58,6 +58,8 @@ class Init(object):
         # that is guaranteed to have the incisive teeth in it
         img_t = img[600:1400, 1000:2000]
 
+        orig_h = img.shape[0]
+
         # With these params it works the best (img, scale factor, numNeigh)
         teeth = teeth_cascade.detectMultiScale(img_t, 2.3, 150)
         teeth_t = teeth
@@ -66,7 +68,7 @@ class Init(object):
             for i, (x, y, w, h) in enumerate(teeth):
                 for j, (x1, y1, w1, h1) in enumerate(teeth_t):
                     if i != j and x1 <= x and y1 <= y and \
-                        x1+w1 <= x+w and y1+h1 <= y+h:
+                        x1 + w1 <= x + w and y1 + h1 <= y + h:
                         teeth_t[j] = [-1, -1, -1, -1]
 
         # Obtain rectangles larger than 100x100
@@ -81,12 +83,12 @@ class Init(object):
         x, y, width, height = rects[0]
         width = width/4
 
-        if incisive < 4:
+        if incisive < 5:
             y_cen += y + height/6
-            x_cen += x + (incisive-1) * width + width/2
+            x_cen += x + (incisive - 1) * width + width/2
         else:
             y_cen += y + height/1.2
-            x_cen += x + (incisive-5) * width + width/2
+            x_cen += x + (incisive - 5) * width + width/2
 
         # If visualization is required
         #cv2.rectangle(img, (rectangle[0]+1000, rectangle[1]+600),
@@ -94,31 +96,29 @@ class Init(object):
         #   (255,0,0), 2)
 
         # reshape image to fit in the screen
-        orig_h = img.shape[0]
         img, scale = Utils.resize(img, IMG_WIDTH, IMG_HEIGHT)
         new_h = img.shape[0]
-        tmp = np.array(img)
 
         # model points to image coordinates
         points = shape.data()
         min_x = abs(points[:, 0].min())
         min_y = abs(points[:, 1].min())
-        points = [((point[0]+min_x)*scale*new_h+x_cen*scale, 
-                    (point[1]+min_y)*scale*new_h+y_cen*scale) for point in points]
+        points = [((point[0] + min_x) * scale,
+                   (point[1] + min_y) * scale) for point in points]
 
 
-        pimg = np.array([(int(p[0]), int(p[1])) for p in points])
+        dx = (x_cen * scale - self.start_point[0])/float(new_h)
+        dy = (y_cen * scale - self.start_point[1])/float(new_h)
+        points = [(p[0]+dx, p[1]+dy) for p in points]
 
-        self.tooth = points
-
+        pimg = np.array([(int(p[0]) * new_h, int(p[1]) * new_h) for p in points])
         cv2.polylines(img, [pimg], True, (125, 255, 0), 2)
 
-
         cv2.imshow('img', img)
-        cv2.waitKey(0)
+        cv2.waitKey(1)
         cv2.destroyAllWindows()
 
-        self._initial_fit = Shape(np.array([[point[0], point[1]] for point in self.tooth]))
+        self._initial_fit = Shape(np.array([[point[0] * orig_h, point[1] * orig_h] for point in points]))
 
 
     def _init_manual(self, shape, img):
