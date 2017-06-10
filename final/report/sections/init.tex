@@ -44,7 +44,7 @@ consist of several "weak" classifiers, boosted by the appending of one afther
 the other. 
 
 In order to train the classifiers, sections such as the one shown in the figure
-above were cropped from each of the 30 radiographs, for the positive data, and,
+above were cropped from each of the 14 radiographs, for the positive data, and,
 as for the negative data, 150 random images were gathered. Each image
 (regardless positive or negative), was denoised and greyed before being used for
 training. 
@@ -74,9 +74,9 @@ first, detection-wise, we tinkered with the detection parameters, changing the
 scale at which the image would be resized for further detections, and the
 minimum number of neighbours, which, if changed to a high value, it would result
 in few detections, but of higher quality, which is what we are interested in.
-Result-wise changes made to improve the detection were, first delete rectangles
-that are inside of others, and then proceed to ignore those that are not
-sufficiently large. With these two techniques, we have a result such as
+Result-wise the change made to improve the detection were, 
+delete those that are not sufficiently large. 
+With these two modifications, we have a result such as
 this
 
 \begin{figure}[h]
