@@ -7,11 +7,11 @@ the automatic initialization separately.
 
 The implementation is pretty straightforward. Using different
 OpenCV routines, the mean shape can be dragged to its initial
-position, and one it has been located, the fitting algorithm starts.
+position, and once it has been placed, the fitting algorithm starts.
 
 Nevertheless, this procedure presents a problem. The rotation of the
-shape can't be changed, which causes that the initial estimation is not
-as accurate as it could be.
+shape can't be changed, which causes the initial estimation to not be
+as accurate as it could.
 
 \subsection{Automatic}
 
@@ -22,7 +22,7 @@ gradients (HOG), combined with training a support vector machine (SVM), to
 detect the shape of the 8 incisives altogether. But we stumbled upon an
 obstacle. Whereas with other images (much more clear, less noise, with highly
 detailed edges) this method is feasible, with our images it was not as good,
-even after treating the image with techniques (such as denoising, white and
+even after "cleaning" the image (such as denoising, white and
 black hat...) The following images represent an example with a normal image, 
 and one cropped section of incisives, from radiograph1.
 
@@ -49,16 +49,16 @@ as for the negative data, 150 random images were gathered. Each image
 (regardless positive or negative), was denoised and greyed before being used for
 training. 
 
-As for how the training was made, first, a \textit{out.vec} was created with the
+As for how the training was made, first, an \textit{out.vec} file was created with the
 tool \textit{createsamples} from openCV, and the set of images, together with a list
-of anotations for the positive samples. Once having the out.vec, the next step
+of anotations for the positive samples. Once having the file, the next step
 is to use the tool \textit{opencv\_traincascade}, in order to create the
-corresponding XML file with the classifier. Due to the ammount of data not
+corresponding XML file with the classifier. Due to the amount of data not
 being too large, we choose to make it a 3-stage classifier (more would have been
 not efficient, due to the time to train it, and not improving too much, due to
 having a low quantity of samples)
 
-The results obtained are good enough, but not better. The gist of
+The results obtained are good enough, but not perfect. The gist of
 the Viola-Jones technique is that it is quite fast, but it is not flawless, and
 it found quite some false positives, as shown in the image below
 
@@ -76,7 +76,7 @@ minimum number of neighbours, which, if changed to a high value, it would result
 in few detections, but of higher quality, which is what we are interested in.
 Result-wise changes made to improve the detection were, first delete rectangles
 that are inside of others, and then proceed to ignore those that are not
-sufficiently large enough. With these two techniques, we have a result such as
+sufficiently large. With these two techniques, we have a result such as
 this
 
 \begin{figure}[h]
@@ -85,7 +85,7 @@ this
   \caption{Improved results}
 \end{figure}
 
-Once we have a proper automatic detector mechanism, all that remains is to place
+Once we have a proper automatic detection mechanism, all that remains is to place
 the shape in its correct position. For this matter, a small choosing technique
 was developed:
 \begin{itemize}
