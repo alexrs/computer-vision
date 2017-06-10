@@ -88,7 +88,7 @@ def main():
         perf.append(jaccard(test_img, fit, dataset, incisor))
 
     # Evaluation of the results
-    #Plot.approximated_shape(X, test_img, wait=True)
+    Plot.approximated_shape(X, test_img, wait=True)
     Plot.perf(perf)
 
 
