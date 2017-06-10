@@ -83,12 +83,24 @@ class Init(object):
         x, y, width, height = rects[0]
         width = width/4
 
+        # Due to the detection mechanism, the centroid of the tooth is located the
+        # with the following logic
+        # If incisive is one of the upper 4, the rectangle is divided in 4
+        # areas, and the tooth x position is located at the center of one of the
+        # 4 (corresponding to the incisive number)
+        # If the incisive is one of the lower 4, as they are usually smaller,
+        # the areas are now 8, instead of 4, and the 2 first, and 2 last are
+        # always "ignored", the tooth will always be located in one of the
+        # mdidle 4 areas (again, corresponding to the incisive number)
         if incisive < 5:
             y_cen += y + height/6
             x_cen += x + (incisive - 1) * width + width/2
         else:
-            y_cen += y + height/1.2
-            x_cen += x + (incisive - 5) * width + width/2
+            width = width/2
+            y_cen += y + height/1.5
+            #x_cen += x + (incisive - 5) * width + width/2
+            x_cen += x + width * 2
+            x_cen += (incisive - 5) * width + width/2
 
         # If visualization is required
         #cv2.rectangle(img, (rectangle[0]+1000, rectangle[1]+600),
